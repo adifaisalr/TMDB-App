@@ -1,0 +1,86 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'androidx.navigation.safeargs.kotlin'
+    id 'dagger.hilt.android.plugin'
+}
+
+android {
+    compileSdkVersion build_versions.compile_sdk
+    buildToolsVersion build_versions.build_tools
+
+    defaultConfig {
+        applicationId "com.adifaisalr.tmdbapplication"
+        minSdkVersion build_versions.min_sdk
+        targetSdkVersion build_versions.target_sdk
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    implementation deps.retrofit.runtime
+    implementation deps.retrofit.gson
+    implementation deps.timber
+    implementation deps.kotlin.stdlib
+    implementation deps.core_ktx
+    implementation deps.app_compat
+    implementation deps.material
+    implementation deps.constraint_layout
+    implementation deps.lifecycle.livedata_ktx
+    implementation deps.lifecycle.viewmodel_ktx
+    implementation deps.lifecycle.runtime
+    implementation deps.lifecycle.java8
+
+    implementation deps.constraint_layout
+    implementation deps.kotlin.stdlib
+    implementation deps.glide.runtime
+    implementation deps.annotations
+    implementation deps.navigation.fragment_ktx
+    implementation deps.navigation.ui_ktx
+    implementation deps.hilt.android
+    implementation deps.okhttp.mock_web_server
+    implementation deps.okhttp.logging_interceptor
+
+    debugImplementation deps.flipper.flipper
+    debugImplementation deps.flipper.network
+    debugImplementation deps.soloader
+
+    releaseImplementation  deps.flipper.noop
+
+    kapt deps.lifecycle.compiler
+    kapt deps.glide.compiler
+    kapt deps.hilt.compiler
+
+    testImplementation project(path: ':app')
+    testImplementation deps.junit
+    testImplementation deps.okhttp.mock_web_server
+    testImplementation deps.arch_core.testing
+    testImplementation deps.mockito.core
+    testImplementation deps.coroutines.android
+    testImplementation deps.coroutines.test
+    testImplementation deps.mockk
+
+    androidTestImplementation deps.espresso.core
+    androidTestImplementation deps.espresso.contrib
+}
