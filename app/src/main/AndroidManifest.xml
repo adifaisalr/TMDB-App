@@ -16,7 +16,7 @@
         android:theme="@style/Theme.TMDBApplication"
         tools:targetApi="31">
         <activity
-            android:name=".ui.MainActivity"
+            android:name="com.adifaisalr.tmdbapplication.presentation.ui.MainActivity"
             android:exported="true"
             android:label="@string/app_name">
             <intent-filter>

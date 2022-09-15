@@ -2,4 +2,6 @@
     <string name="app_name">TMDB Application</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
+    <string name="title_trending">Trending</string>
+    <string name="title_discover">Discover</string>
 </resources>

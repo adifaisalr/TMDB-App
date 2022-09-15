@@ -6,6 +6,10 @@ plugins {
     id 'dagger.hilt.android.plugin'
 }
 
+def apikeyPropertiesFile = rootProject.file("apikey.properties")
+def apikeyProperties = new Properties()
+apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
+
 android {
     compileSdkVersion build_versions.compile_sdk
     buildToolsVersion build_versions.build_tools
@@ -16,6 +20,8 @@ android {
         targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
+
+        buildConfigField("String", "API_KEY_V3", apikeyProperties['API_KEY_V3'])
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -32,6 +38,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    dataBinding {
+        enabled = true
     }
     buildFeatures {
         viewBinding true
@@ -61,6 +70,8 @@ dependencies {
     implementation deps.hilt.android
     implementation deps.okhttp.mock_web_server
     implementation deps.okhttp.logging_interceptor
+
+    implementation deps.fb_shimmer
 
     debugImplementation deps.flipper.flipper
     debugImplementation deps.flipper.network

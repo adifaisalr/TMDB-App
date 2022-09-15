@@ -1,2 +1,3 @@
 rootProject.name = "TMDB Application"
 include ':app'
+include ':domain'

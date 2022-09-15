@@ -1,4 +1,4 @@
-package com.adifaisalr.tmdbapplication.ui
+package com.adifaisalr.tmdbapplication.presentation.ui
 
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -9,7 +9,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.adifaisalr.tmdbapplication.R
 import com.adifaisalr.tmdbapplication.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding

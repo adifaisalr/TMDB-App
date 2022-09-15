@@ -45,6 +45,7 @@ versions.soloader = "0.10.1"
 versions.vectordrawable = "1.1.0"
 versions.hilt = "2.38.1"
 versions.mockk = "1.9.3"
+versions.fb_shimmer = "0.5.0"
 ext.versions = versions
 
 def build_versions = [:]
@@ -70,6 +71,8 @@ def arch_core = [:]
 arch_core.runtime = "androidx.arch.core:core-runtime:$versions.arch_core"
 arch_core.testing = "androidx.arch.core:core-testing:$versions.arch_core"
 deps.arch_core = arch_core
+
+deps.fb_shimmer = "com.facebook.shimmer:shimmer:$versions.fb_shimmer"
 
 deps.benchmark = "androidx.benchmark:benchmark-junit4:$versions.benchmark"
 deps.benchmark_gradle = "androidx.benchmark:benchmark-gradle-plugin:$versions.benchmark"

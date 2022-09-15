@@ -1,4 +1,4 @@
-package com.adifaisalr.tmdbapplication.api
+package com.adifaisalr.tmdbapplication.data.api
 
 import okhttp3.OkHttpClient
 
