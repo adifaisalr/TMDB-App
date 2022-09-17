@@ -31,7 +31,6 @@ class HomeCarouselAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Media) {
-            binding.movie = item
             Glide.with(binding.imageView)
                 .load(Api.DEFAULT_BASE_IMAGE_URL + Api.IMAGE_SIZE_W92 + item.posterPath)
                 .centerInside()

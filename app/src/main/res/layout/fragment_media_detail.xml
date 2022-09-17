@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="?attr/actionBarSize"
     tools:context=".presentation.ui.detail.MediaDetailFragment">
 
     <ProgressBar
@@ -99,6 +98,16 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/noReviewLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginBottom="5dp"
+                android:text="@string/no_review"
+                android:textSize="14sp" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/reviewRv"
                 android:layout_width="match_parent"
@@ -121,7 +130,7 @@
                 tools:visibility="visible">
 
                 <include
-                    layout="@layout/item_review"
+                    layout="@layout/shimmer_item_review"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp" />

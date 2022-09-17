@@ -1,11 +1,11 @@
 package com.adifaisalr.tmdbapplication.domain.model
 
 
-import com.google.gson.annotations.SerializedName
 import androidx.annotation.Keep
+import com.google.gson.annotations.SerializedName
 
 @Keep
-data class DiscoverMovieResponse(
+data class DiscoverMedia(
     @SerializedName("page")
     val page: Int,
     @SerializedName("results")

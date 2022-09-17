@@ -5,12 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.adifaisalr.tmdbapplication.R
-import com.adifaisalr.tmdbapplication.domain.model.DiscoverMovieResponse
-import com.adifaisalr.tmdbapplication.domain.model.PopularMovieResponse
-import com.adifaisalr.tmdbapplication.domain.model.TrendingResponse
+import com.adifaisalr.tmdbapplication.domain.model.DiscoverMedia
+import com.adifaisalr.tmdbapplication.domain.model.PopularMedia
+import com.adifaisalr.tmdbapplication.domain.model.TrendingMedia
 import com.adifaisalr.tmdbapplication.domain.model.dataholder.DataHolder
-import com.adifaisalr.tmdbapplication.domain.usecase.GetDiscoverMovieUseCase
-import com.adifaisalr.tmdbapplication.domain.usecase.GetPopularMovieUseCase
+import com.adifaisalr.tmdbapplication.domain.usecase.GetDiscoverMediaUseCase
+import com.adifaisalr.tmdbapplication.domain.usecase.GetPopularMediaUseCase
 import com.adifaisalr.tmdbapplication.domain.usecase.GetTrendingMediaUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -18,9 +18,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MediaViewModel @Inject constructor(
-    private val getPopularMovieUseCase: GetPopularMovieUseCase,
+    private val getPopularMediaUseCase: GetPopularMediaUseCase,
     private val getTrendingMediaUseCase: GetTrendingMediaUseCase,
-    private val getDiscoverMovieUseCase: GetDiscoverMovieUseCase
+    private val getDiscoverMediaUseCase: GetDiscoverMediaUseCase
 ) : ViewModel() {
 
     var mediaType: MediaType = MediaType.MOVIES
@@ -30,21 +30,21 @@ class MediaViewModel @Inject constructor(
     }
     val text: LiveData<String> = _text
 
-    val _popularMovieResult = MutableLiveData<DataHolder<PopularMovieResponse>>()
-    val popularMovieResult: LiveData<DataHolder<PopularMovieResponse>>
+    val _popularMovieResult = MutableLiveData<DataHolder<PopularMedia>>()
+    val popularMovieResult: LiveData<DataHolder<PopularMedia>>
         get() = _popularMovieResult
 
-    val _trendingMovieResult = MutableLiveData<DataHolder<TrendingResponse>>()
-    val trendingMovieResult: LiveData<DataHolder<TrendingResponse>>
+    val _trendingMovieResult = MutableLiveData<DataHolder<TrendingMedia>>()
+    val trendingMovieResult: LiveData<DataHolder<TrendingMedia>>
         get() = _trendingMovieResult
 
-    val _discoverMovieResult = MutableLiveData<DataHolder<DiscoverMovieResponse>>()
-    val discoverMovieResult: LiveData<DataHolder<DiscoverMovieResponse>>
+    val _discoverMovieResult = MutableLiveData<DataHolder<DiscoverMedia>>()
+    val discoverMovieResult: LiveData<DataHolder<DiscoverMedia>>
         get() = _discoverMovieResult
 
     fun getPopularMovies() = viewModelScope.launch {
         _popularMovieResult.postValue(DataHolder.Loading)
-        val response = getPopularMovieUseCase()
+        val response = getPopularMediaUseCase(mediaType)
         _popularMovieResult.postValue(response)
     }
 
@@ -56,7 +56,7 @@ class MediaViewModel @Inject constructor(
 
     fun getDiscoverMovies() = viewModelScope.launch {
         _discoverMovieResult.postValue(DataHolder.Loading)
-        val response = getDiscoverMovieUseCase()
+        val response = getDiscoverMediaUseCase(mediaType)
         _discoverMovieResult.postValue(response)
     }
 

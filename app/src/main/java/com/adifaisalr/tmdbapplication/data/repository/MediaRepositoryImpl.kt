@@ -1,35 +1,51 @@
 package com.adifaisalr.tmdbapplication.data.repository
 
-import com.adifaisalr.tmdbapplication.domain.model.dataholder.DataHolder
 import com.adifaisalr.tmdbapplication.data.api.TmdbService
-import com.adifaisalr.tmdbapplication.domain.model.DiscoverMovieResponse
-import com.adifaisalr.tmdbapplication.domain.model.MovieDetailResponse
-import com.adifaisalr.tmdbapplication.domain.model.MovieReviewsResponse
-import com.adifaisalr.tmdbapplication.domain.model.PopularMovieResponse
+import com.adifaisalr.tmdbapplication.domain.model.DiscoverMedia
+import com.adifaisalr.tmdbapplication.domain.model.Media
+import com.adifaisalr.tmdbapplication.domain.model.MediaReview
+import com.adifaisalr.tmdbapplication.domain.model.PopularMedia
+import com.adifaisalr.tmdbapplication.domain.model.TrendingMedia
+import com.adifaisalr.tmdbapplication.domain.model.dataholder.DataHolder
 import com.adifaisalr.tmdbapplication.domain.repository.MediaRepository
-import com.adifaisalr.tmdbapplication.domain.model.TrendingResponse
 
 class MediaRepositoryImpl(
     private val tmdbService: TmdbService
 ) : MediaRepository {
 
-    override suspend fun getTrendingMedias(mediaType: String, timeWindow: String): DataHolder<TrendingResponse> {
+    override suspend fun getTrendingMedias(mediaType: String, timeWindow: String): DataHolder<TrendingMedia> {
         return tmdbService.getTrending(mediaType, timeWindow)
     }
 
-    override suspend fun getDiscoverMovies(): DataHolder<DiscoverMovieResponse> {
+    override suspend fun getDiscoverMovies(): DataHolder<DiscoverMedia> {
         return tmdbService.getDiscoverMovie()
     }
 
-    override suspend fun getPopularMovies(): DataHolder<PopularMovieResponse> {
+    override suspend fun getDiscoverTvs(): DataHolder<DiscoverMedia> {
+        return tmdbService.getDiscoverTv()
+    }
+
+    override suspend fun getPopularMovies(): DataHolder<PopularMedia> {
         return tmdbService.getPopularMovie()
     }
 
-    override suspend fun getMovieDetail(movieId: Int): DataHolder<MovieDetailResponse> {
+    override suspend fun getPopularTvs(): DataHolder<PopularMedia> {
+        return tmdbService.getPopularTv()
+    }
+
+    override suspend fun getMovieDetail(movieId: Int): DataHolder<Media> {
         return tmdbService.getMovieDetail(movieId)
     }
 
-    override suspend fun getMovieReviews(movieId: Int): DataHolder<MovieReviewsResponse> {
+    override suspend fun getMovieReviews(movieId: Int): DataHolder<MediaReview> {
         return tmdbService.getMovieReviews(movieId)
+    }
+
+    override suspend fun getTvDetail(tvId: Int): DataHolder<Media> {
+        return tmdbService.getTvDetail(tvId)
+    }
+
+    override suspend fun getTvReviews(tvId: Int): DataHolder<MediaReview> {
+        return tmdbService.getTvReviews(tvId)
     }
 }

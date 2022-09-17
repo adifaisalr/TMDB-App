@@ -26,6 +26,10 @@
             android:name="media_id"
             app:argType="integer"
             android:defaultValue="0" />
+        <argument
+            android:name="media_type"
+            app:argType="com.adifaisalr.tmdbapplication.presentation.ui.media.MediaViewModel$Companion$MediaType"
+            android:defaultValue="MOVIES" />
     </fragment>
     <action
         android:id="@+id/action_global_mediaDetailFragment"

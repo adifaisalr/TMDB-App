@@ -5,7 +5,7 @@
 
     <data>
         <variable
-            name="movie"
+            name="media"
             type="com.adifaisalr.tmdbapplication.domain.model.Media" />
     </data>
 
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="@{movie.title}"
+            android:text="@{media.title}"
             android:textStyle="bold"
             tools:text="title"
             android:textColor="@color/white"

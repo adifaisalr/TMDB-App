@@ -32,7 +32,7 @@ class HomeBannerAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Media) {
-            binding.movie = item
+            binding.media = item
             Glide.with(binding.imageView)
                 .load(Api.DEFAULT_BASE_IMAGE_URL + Api.IMAGE_SIZE_W1280 + item.backdropPath)
                 .centerCrop()

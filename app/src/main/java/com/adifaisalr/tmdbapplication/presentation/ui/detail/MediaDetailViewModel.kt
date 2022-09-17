@@ -4,11 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.adifaisalr.tmdbapplication.domain.model.MovieDetailResponse
-import com.adifaisalr.tmdbapplication.domain.model.MovieReviewsResponse
+import com.adifaisalr.tmdbapplication.domain.model.Media
+import com.adifaisalr.tmdbapplication.domain.model.MediaReview
 import com.adifaisalr.tmdbapplication.domain.model.dataholder.DataHolder
-import com.adifaisalr.tmdbapplication.domain.usecase.GetMovieDetailUseCase
-import com.adifaisalr.tmdbapplication.domain.usecase.GetMovieReviewUseCase
+import com.adifaisalr.tmdbapplication.domain.usecase.GetMediaDetailUseCase
+import com.adifaisalr.tmdbapplication.domain.usecase.GetMediaReviewUseCase
+import com.adifaisalr.tmdbapplication.presentation.ui.media.MediaViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,29 +17,30 @@ import kotlin.properties.Delegates
 
 @HiltViewModel
 class MediaDetailViewModel @Inject constructor(
-    private val getMovieDetailUseCase: GetMovieDetailUseCase,
-    private val getMovieReviewUseCase: GetMovieReviewUseCase
+    private val getMediaDetailUseCase: GetMediaDetailUseCase,
+    private val getMediaReviewUseCase: GetMediaReviewUseCase
 ) : ViewModel() {
 
-    var movieId by Delegates.notNull<Int>()
+    var mediaId by Delegates.notNull<Int>()
+    lateinit var mediaType: MediaViewModel.Companion.MediaType
 
-    val _movieDetailResult = MutableLiveData<DataHolder<MovieDetailResponse>>()
-    val movieDetailResult: LiveData<DataHolder<MovieDetailResponse>>
+    val _movieDetailResult = MutableLiveData<DataHolder<Media>>()
+    val movieDetailResult: LiveData<DataHolder<Media>>
         get() = _movieDetailResult
 
-    val _movieReviewResult = MutableLiveData<DataHolder<MovieReviewsResponse>>()
-    val movieReviewResult: LiveData<DataHolder<MovieReviewsResponse>>
+    val _movieReviewResult = MutableLiveData<DataHolder<MediaReview>>()
+    val movieReviewResult: LiveData<DataHolder<MediaReview>>
         get() = _movieReviewResult
 
     fun getMovieDetail() = viewModelScope.launch {
         _movieDetailResult.postValue(DataHolder.Loading)
-        val response = getMovieDetailUseCase(movieId)
+        val response = getMediaDetailUseCase(mediaType, mediaId)
         _movieDetailResult.postValue(response)
     }
 
     fun getMovieReviews() = viewModelScope.launch {
         _movieReviewResult.postValue(DataHolder.Loading)
-        val response = getMovieReviewUseCase(movieId)
+        val response = getMediaReviewUseCase(mediaType, mediaId)
         _movieReviewResult.postValue(response)
     }
 

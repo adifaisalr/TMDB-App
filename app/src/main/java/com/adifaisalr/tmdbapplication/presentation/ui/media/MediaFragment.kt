@@ -95,7 +95,7 @@ class MediaFragment : Fragment() {
 
     private fun initRecyclerView() {
         val actionClickListener: ((Media) -> Unit) = { media ->
-            val action = HomeFragmentDirections.actionGlobalMediaDetailFragment(media.id)
+            val action = HomeFragmentDirections.actionGlobalMediaDetailFragment(media.id, viewModel.mediaType)
             findNavController().safeNavigate(action)
         }
         popularAdapter = HomeBannerAdapter(popularMedia, actionClickListener)

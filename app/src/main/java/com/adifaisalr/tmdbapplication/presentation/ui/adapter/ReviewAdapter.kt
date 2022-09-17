@@ -6,15 +6,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.adifaisalr.tmdbapplication.R
 import com.adifaisalr.tmdbapplication.data.api.Api
 import com.adifaisalr.tmdbapplication.databinding.ItemReviewBinding
-import com.adifaisalr.tmdbapplication.domain.model.MovieReviewsResponse
+import com.adifaisalr.tmdbapplication.domain.model.Review
 import com.bumptech.glide.Glide
 
 /**
  * Adapter for the review list.
  */
 class ReviewAdapter(
-    private var reviews: ArrayList<MovieReviewsResponse.Review> = arrayListOf(),
-    private val actionClickListener: ((MovieReviewsResponse.Review) -> Unit)? = null
+    private var reviews: ArrayList<Review> = arrayListOf(),
+    private val actionClickListener: ((Review) -> Unit)? = null
 ) : RecyclerView.Adapter<ReviewAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -30,7 +30,7 @@ class ReviewAdapter(
     inner class ViewHolder(val binding: ItemReviewBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: MovieReviewsResponse.Review) {
+        fun bind(item: Review) {
             item.authorDetails.avatarPath?.let { path ->
                 Glide.with(binding.profileImage)
                     .load(Api.DEFAULT_BASE_IMAGE_URL + Api.IMAGE_SIZE_W92 + path)

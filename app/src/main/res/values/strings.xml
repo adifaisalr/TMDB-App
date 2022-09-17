@@ -9,5 +9,6 @@
     <string name="overview">Overview</string>
     <string name="release_date">Release Date</string>
     <string name="review">Review</string>
+    <string name="no_review">No review yet</string>
     <string name="see_all_review">See all review</string>
 </resources>

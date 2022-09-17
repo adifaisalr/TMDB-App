@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import androidx.annotation.Keep
 
 @Keep
-data class TrendingResponse(
+data class TrendingMedia(
     @SerializedName("page")
     val page: Int,
     @SerializedName("results")
