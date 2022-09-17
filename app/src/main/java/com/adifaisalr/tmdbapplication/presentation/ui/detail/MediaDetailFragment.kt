@@ -56,6 +56,7 @@ class MediaDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.show()
+        mainViewModel.updateBottomNav(false)
         initRecyclerView()
         viewModel.mediaDetailResult.observe(viewLifecycleOwner) { result ->
             when (result) {

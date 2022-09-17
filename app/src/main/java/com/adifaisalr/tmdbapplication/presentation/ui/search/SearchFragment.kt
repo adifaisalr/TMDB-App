@@ -11,6 +11,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +20,7 @@ import com.adifaisalr.tmdbapplication.R
 import com.adifaisalr.tmdbapplication.databinding.FragmentSearchBinding
 import com.adifaisalr.tmdbapplication.domain.model.SearchItem
 import com.adifaisalr.tmdbapplication.domain.model.dataholder.DataHolder
+import com.adifaisalr.tmdbapplication.presentation.ui.MainViewModel
 import com.adifaisalr.tmdbapplication.presentation.ui.adapter.SearchResultAdapter
 import com.adifaisalr.tmdbapplication.presentation.ui.home.HomeFragmentDirections
 import com.adifaisalr.tmdbapplication.presentation.ui.media.MediaViewModel
@@ -30,6 +32,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class SearchFragment : Fragment() {
 
     private val viewModel by viewModels<SearchViewModel>()
+    val mainViewModel: MainViewModel by activityViewModels()
 
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
@@ -48,6 +51,7 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.hide()
+        mainViewModel.updateBottomNav(false)
         initSearchInputListener()
         initRecyclerView()
         observeViewModel()

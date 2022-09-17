@@ -17,6 +17,11 @@ class MainViewModel @Inject constructor() : ViewModel() {
     val navigationIcon: LiveData<Drawable?>
         get() = _navigationIcon
 
+    private val _showBottomNav = MutableLiveData<Boolean>()
+    val showBottomNav: LiveData<Boolean>
+        get() = _showBottomNav
+
     fun updateActionBarTitle(title: String) = _title.postValue(title)
     fun updateActionBarNavIcon(icon: Drawable?) = _navigationIcon.postValue(icon)
+    fun updateBottomNav(show: Boolean) = _showBottomNav.postValue(show)
 }

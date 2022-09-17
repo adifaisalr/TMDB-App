@@ -47,5 +47,6 @@ class HomeFragment : Fragment() {
         mainViewModel.updateActionBarTitle(getString(R.string.app_name))
         mainViewModel.updateActionBarNavIcon(null)
         (activity as AppCompatActivity).supportActionBar?.show()
+        mainViewModel.updateBottomNav(true)
     }
 }
