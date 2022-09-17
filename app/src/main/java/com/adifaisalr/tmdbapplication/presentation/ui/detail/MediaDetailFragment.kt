@@ -57,7 +57,7 @@ class MediaDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.show()
         initRecyclerView()
-        viewModel.movieDetailResult.observe(viewLifecycleOwner) { result ->
+        viewModel.mediaDetailResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is DataHolder.Loading -> {
                     setLoading(true)
@@ -71,7 +71,7 @@ class MediaDetailFragment : Fragment() {
                 }
             }
         }
-        viewModel.movieReviewResult.observe(viewLifecycleOwner) { result ->
+        viewModel.mediaReviewResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is DataHolder.Loading -> {
                     setReviewLoading(true)

@@ -24,25 +24,25 @@ class MediaDetailViewModel @Inject constructor(
     var mediaId by Delegates.notNull<Int>()
     lateinit var mediaType: MediaViewModel.Companion.MediaType
 
-    val _movieDetailResult = MutableLiveData<DataHolder<Media>>()
-    val movieDetailResult: LiveData<DataHolder<Media>>
-        get() = _movieDetailResult
+    val _mediaDetailResult = MutableLiveData<DataHolder<Media>>()
+    val mediaDetailResult: LiveData<DataHolder<Media>>
+        get() = _mediaDetailResult
 
-    val _movieReviewResult = MutableLiveData<DataHolder<MediaReview>>()
-    val movieReviewResult: LiveData<DataHolder<MediaReview>>
-        get() = _movieReviewResult
+    val _mediaReviewResult = MutableLiveData<DataHolder<MediaReview>>()
+    val mediaReviewResult: LiveData<DataHolder<MediaReview>>
+        get() = _mediaReviewResult
 
     fun getMovieDetail() = viewModelScope.launch {
-        _movieDetailResult.postValue(DataHolder.Loading)
+        _mediaDetailResult.postValue(DataHolder.Loading)
         val response = getMediaDetailUseCase(mediaType, mediaId)
-        _movieDetailResult.postValue(response)
+        _mediaDetailResult.postValue(response)
     }
 
     fun getMovieReviews() = viewModelScope.launch {
-        _movieReviewResult.postValue(DataHolder.Loading)
+        _mediaReviewResult.postValue(DataHolder.Loading)
         val response = getMediaReviewUseCase(mediaType, mediaId)
-        _movieReviewResult.postValue(response)
+        _mediaReviewResult.postValue(response)
     }
 
-    fun getReviews() = movieReviewResult.value?.peekData?.reviews ?: listOf()
+    fun getReviews() = mediaReviewResult.value?.peekData?.reviews ?: listOf()
 }
