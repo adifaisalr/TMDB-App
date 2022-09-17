@@ -4,10 +4,12 @@ import com.adifaisalr.tmdbapplication.domain.model.DiscoverMedia
 import com.adifaisalr.tmdbapplication.domain.model.Media
 import com.adifaisalr.tmdbapplication.domain.model.MediaReview
 import com.adifaisalr.tmdbapplication.domain.model.PopularMedia
+import com.adifaisalr.tmdbapplication.domain.model.SearchMedia
 import com.adifaisalr.tmdbapplication.domain.model.TrendingMedia
 import com.adifaisalr.tmdbapplication.domain.model.dataholder.DataHolder
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 /**
  * REST API access points
@@ -42,4 +44,7 @@ interface TmdbService {
 
     @GET("tv/{tv_id}/reviews")
     suspend fun getTvReviews(@Path("tv_id") tvId: Int): DataHolder<MediaReview>
+
+    @GET("search/multi")
+    suspend fun searchMedia(@Query("query") keyword: String, @Query("page") page: Int): DataHolder<SearchMedia>
 }

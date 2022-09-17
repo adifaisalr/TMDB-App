@@ -4,6 +4,7 @@ import com.adifaisalr.tmdbapplication.domain.model.DiscoverMedia
 import com.adifaisalr.tmdbapplication.domain.model.Media
 import com.adifaisalr.tmdbapplication.domain.model.MediaReview
 import com.adifaisalr.tmdbapplication.domain.model.PopularMedia
+import com.adifaisalr.tmdbapplication.domain.model.SearchMedia
 import com.adifaisalr.tmdbapplication.domain.model.TrendingMedia
 import com.adifaisalr.tmdbapplication.domain.model.dataholder.DataHolder
 
@@ -17,4 +18,5 @@ interface MediaRepository {
     suspend fun getMovieReviews(movieId: Int): DataHolder<MediaReview>
     suspend fun getTvDetail(tvId: Int): DataHolder<Media>
     suspend fun getTvReviews(tvId: Int): DataHolder<MediaReview>
+    suspend fun searchMedia(keyword: String, page: Int): DataHolder<SearchMedia>
 }

@@ -11,4 +11,8 @@
     <string name="review">Review</string>
     <string name="no_review">No review yet</string>
     <string name="see_all_review">See all review</string>
+    <string name="search">Search</string>
+    <string name="search_hint">Search Movie / TV Show</string>
+    <string name="empty_search_result">No results for <b>%s</b></string>
+    <string name="general_error">Unable to get data, please try again later</string>
 </resources>

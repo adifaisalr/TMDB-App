@@ -1,14 +1,18 @@
 package com.adifaisalr.tmdbapplication.presentation.ui
 
 import android.os.Bundle
+import android.view.Menu
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.adifaisalr.tmdbapplication.MobileNavigationDirections
 import com.adifaisalr.tmdbapplication.R
 import com.adifaisalr.tmdbapplication.databinding.ActivityMainBinding
+import com.adifaisalr.tmdbapplication.presentation.util.NavigationUtils.safeNavigate
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -35,6 +39,11 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_home, R.id.navigation_dashboard
             )
         )
+        binding.toolbar.setOnMenuItemClickListener {
+            val action = MobileNavigationDirections.actionGlobalSearchFragment()
+            navController.safeNavigate(action)
+            true
+        }
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         viewModel.title.observe(this) { title ->
@@ -46,5 +55,10 @@ class MainActivity : AppCompatActivity() {
                 navController.navigateUp()
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_search, menu)
+        return super.onCreateOptionsMenu(menu)
     }
 }
