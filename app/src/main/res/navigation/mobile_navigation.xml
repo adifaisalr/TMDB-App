@@ -9,11 +9,26 @@
         android:id="@+id/navigation_home"
         android:name="com.adifaisalr.tmdbapplication.presentation.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.adifaisalr.tmdbapplication.presentation.ui.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard" />
+    <fragment
+        android:id="@+id/mediaDetailFragment"
+        android:name="com.adifaisalr.tmdbapplication.presentation.ui.detail.MediaDetailFragment"
+        android:label="fragment_media_detail"
+        tools:layout="@layout/fragment_media_detail" >
+        <argument
+            android:name="media_id"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_mediaDetailFragment"
+        app:destination="@id/mediaDetailFragment" />
+
 </navigation>

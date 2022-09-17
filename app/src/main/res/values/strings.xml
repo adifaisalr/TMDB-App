@@ -2,6 +2,12 @@
     <string name="app_name">TMDB Application</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
+    <string name="title_movies">Movies</string>
+    <string name="title_tvs">TV Shows</string>
     <string name="title_trending">Trending</string>
     <string name="title_discover">Discover</string>
+    <string name="overview">Overview</string>
+    <string name="release_date">Release Date</string>
+    <string name="review">Review</string>
+    <string name="see_all_review">See all review</string>
 </resources>

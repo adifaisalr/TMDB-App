@@ -12,21 +12,22 @@ import com.bumptech.glide.Glide
 /**
  * Adapter for the home slider list.
  */
-class HomeSliderAdapter(
-    private var users: ArrayList<Media> = arrayListOf()
-) : RecyclerView.Adapter<HomeSliderAdapter.ViewHolder>() {
+class HomeCarouselAdapter(
+    private var users: ArrayList<Media> = arrayListOf(),
+    private val actionClickListener: ((Media) -> Unit)? = null
+) : RecyclerView.Adapter<HomeCarouselAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = users[position]
-
         holder.bind(item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder.from(parent)
+        val inflater = LayoutInflater.from(parent.context)
+        return ViewHolder(ItemSliderBinding.inflate(inflater, parent, false))
     }
 
-    class ViewHolder private constructor(val binding: ItemSliderBinding) :
+    inner class ViewHolder(val binding: ItemSliderBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Media) {
@@ -36,16 +37,12 @@ class HomeSliderAdapter(
                 .centerInside()
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(binding.imageView)
-            binding.executePendingBindings()
-        }
-
-        companion object {
-            fun from(parent: ViewGroup): ViewHolder {
-                val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ItemSliderBinding.inflate(layoutInflater, parent, false)
-
-                return ViewHolder(binding)
+            actionClickListener?.let { listener ->
+                binding.root.setOnClickListener {
+                    listener.invoke(item)
+                }
             }
+            binding.executePendingBindings()
         }
     }
 

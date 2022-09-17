@@ -72,6 +72,7 @@ dependencies {
     implementation deps.okhttp.logging_interceptor
 
     implementation deps.fb_shimmer
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     debugImplementation deps.flipper.flipper
     debugImplementation deps.flipper.network

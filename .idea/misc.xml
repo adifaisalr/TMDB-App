@@ -3,11 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Android/TMDBApplication/app/src/main/res/drawable-v24/bg_outline_black.xml" value="0.207" />
         <entry key="..\:/Android/TMDBApplication/app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.207" />
         <entry key="..\:/Android/TMDBApplication/app/src/main/res/layout/activity_main.xml" value="0.24320652173913043" />
         <entry key="..\:/Android/TMDBApplication/app/src/main/res/layout/fragment_home.xml" value="0.24320652173913043" />
+        <entry key="..\:/Android/TMDBApplication/app/src/main/res/layout/fragment_media.xml" value="0.1" />
+        <entry key="..\:/Android/TMDBApplication/app/src/main/res/layout/fragment_media_detail.xml" value="0.24320652173913043" />
         <entry key="..\:/Android/TMDBApplication/app/src/main/res/layout/fragment_notifications.xml" value="0.24320652173913043" />
+        <entry key="..\:/Android/TMDBApplication/app/src/main/res/layout/item_banner.xml" value="0.33" />
+        <entry key="..\:/Android/TMDBApplication/app/src/main/res/layout/item_review.xml" value="0.25" />
         <entry key="..\:/Android/TMDBApplication/app/src/main/res/layout/item_slider.xml" value="0.24320652173913043" />
+        <entry key="..\:/Android/TMDBApplication/app/src/main/res/layout/shimmer_item_review.xml" value="0.24320652173913043" />
         <entry key="..\:/Android/TMDBApplication/app/src/main/res/layout/shimmer_item_slider.xml" value="0.24320652173913043" />
         <entry key="..\:/Android/TMDBApplication/app/src/main/res/menu/bottom_nav_menu.xml" value="0.1" />
       </map>

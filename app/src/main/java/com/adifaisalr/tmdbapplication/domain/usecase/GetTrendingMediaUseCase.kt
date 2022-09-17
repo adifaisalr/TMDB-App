@@ -2,14 +2,14 @@ package com.adifaisalr.tmdbapplication.domain.usecase
 
 import com.adifaisalr.tmdbapplication.domain.model.TrendingResponse
 import com.adifaisalr.tmdbapplication.domain.model.dataholder.DataHolder
-import com.adifaisalr.tmdbapplication.domain.repository.MovieRepository
+import com.adifaisalr.tmdbapplication.domain.repository.MediaRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class GetTrendingMediaUseCase @Inject constructor(private val movieRepository: MovieRepository) {
+class GetTrendingMediaUseCase @Inject constructor(private val mediaRepository: MediaRepository) {
     suspend operator fun invoke(mediaType: String, timeWindow: String): DataHolder<TrendingResponse> =
         withContext(Dispatchers.IO) {
-            return@withContext movieRepository.getTrendingMedias(mediaType, timeWindow)
+            return@withContext mediaRepository.getTrendingMedias(mediaType, timeWindow)
         }
 }
