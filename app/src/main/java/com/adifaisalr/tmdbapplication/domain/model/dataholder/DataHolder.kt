@@ -4,7 +4,7 @@ import java.io.Serializable
 
 sealed class DataHolder<out T> : Serializable {
     object NoData : DataHolder<Nothing>()
-    data class Success<T>(val data: T?) : DataHolder<T>()
+    data class Success<T>(val data: T) : DataHolder<T>()
     data class Failure(val errorData: ErrorData) : DataHolder<Nothing>()
     object Loading : DataHolder<Nothing>()
     object NetworkError : DataHolder<Nothing>()

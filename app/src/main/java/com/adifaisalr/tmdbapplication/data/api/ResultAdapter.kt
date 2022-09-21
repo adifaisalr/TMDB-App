@@ -43,8 +43,10 @@ class ResultCall<T>(proxy: Call<T>) : CallDelegate<T, DataHolder<T>>(proxy) {
             val code = response.code()
             val result = if (code in 200 until 300) {
                 val body = response.body()
-                val successResult: DataHolder<T> = DataHolder.Success(body)
-                successResult
+                body?.let {
+                    val successResult: DataHolder<T> = DataHolder.Success(it)
+                    successResult
+                } ?: DataHolder.Failure(ErrorData(response.message(), code))
             } else {
                 DataHolder.Failure(ErrorData(response.message(), code))
             }

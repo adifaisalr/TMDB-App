@@ -12,10 +12,12 @@
         <entry key="..\:/Android/TMDBApplication/app/src/main/res/layout/fragment_media.xml" value="0.1" />
         <entry key="..\:/Android/TMDBApplication/app/src/main/res/layout/fragment_media_detail.xml" value="0.24320652173913043" />
         <entry key="..\:/Android/TMDBApplication/app/src/main/res/layout/fragment_notifications.xml" value="0.24320652173913043" />
+        <entry key="..\:/Android/TMDBApplication/app/src/main/res/layout/fragment_search.xml" value="0.24320652173913043" />
         <entry key="..\:/Android/TMDBApplication/app/src/main/res/layout/fragment_test.xml" value="0.24320652173913043" />
         <entry key="..\:/Android/TMDBApplication/app/src/main/res/layout/item_banner.xml" value="0.33" />
         <entry key="..\:/Android/TMDBApplication/app/src/main/res/layout/item_review.xml" value="0.25" />
         <entry key="..\:/Android/TMDBApplication/app/src/main/res/layout/item_slider.xml" value="0.24320652173913043" />
+        <entry key="..\:/Android/TMDBApplication/app/src/main/res/layout/loading_list_item.xml" value="0.24320652173913043" />
         <entry key="..\:/Android/TMDBApplication/app/src/main/res/layout/search_fragment.xml" value="0.24320652173913043" />
         <entry key="..\:/Android/TMDBApplication/app/src/main/res/layout/search_item.xml" value="0.24320652173913043" />
         <entry key="..\:/Android/TMDBApplication/app/src/main/res/layout/shimmer_item_review.xml" value="0.24320652173913043" />

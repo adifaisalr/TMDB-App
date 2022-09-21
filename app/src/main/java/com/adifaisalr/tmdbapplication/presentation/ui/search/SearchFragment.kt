@@ -3,6 +3,7 @@ package com.adifaisalr.tmdbapplication.presentation.ui.search
 import android.content.Context
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -13,20 +14,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.adifaisalr.tmdbapplication.R
 import com.adifaisalr.tmdbapplication.databinding.FragmentSearchBinding
 import com.adifaisalr.tmdbapplication.domain.model.SearchItem
 import com.adifaisalr.tmdbapplication.domain.model.dataholder.DataHolder
 import com.adifaisalr.tmdbapplication.presentation.ui.MainViewModel
-import com.adifaisalr.tmdbapplication.presentation.ui.adapter.SearchResultAdapter
-import com.adifaisalr.tmdbapplication.presentation.ui.home.HomeFragmentDirections
+import com.adifaisalr.tmdbapplication.presentation.ui.adapter.SearchLoadStateAdapter
+import com.adifaisalr.tmdbapplication.presentation.ui.adapter.SearchResultPagingAdapter
 import com.adifaisalr.tmdbapplication.presentation.ui.media.MediaViewModel
 import com.adifaisalr.tmdbapplication.presentation.util.NavigationUtils.safeNavigate
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
@@ -37,7 +36,7 @@ class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
 
-    lateinit var adapter: SearchResultAdapter
+    lateinit var adapter: SearchResultPagingAdapter
     var searchResults: ArrayList<SearchItem> = arrayListOf()
 
     override fun onCreateView(
@@ -85,80 +84,38 @@ class SearchFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.searchResult.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is DataHolder.Success -> {
-                    setLoading(false)
-                    if (result.data?.results.isNullOrEmpty()) {
-                        clearAdapter()
-                        setError(getString(R.string.empty_search_result, viewModel.query))
-                    } else {
-                        result.data?.results?.let { searchItems ->
-                            searchResults.clear()
-                            searchResults.addAll(searchItems.filter { it.mediaType != "person" })
-                            adapter.notifyDataSetChanged()
-                        }
-                    }
-                }
-                is DataHolder.Loading -> {
-                    setLoading(true)
-                    setError(null)
-                }
-                is DataHolder.Failure -> {
-                    setLoading(false)
-                    clearAdapter()
-                    setError(result.errorData.message)
-                }
-                else -> {
-                    setLoading(false)
-                    clearAdapter()
-                    setError(getString(R.string.general_error))
-                }
+        viewModel.listViewStateLiveData.observe(viewLifecycleOwner) { state ->
+            state.loadingStateVisibility?.let { binding.loading.visibility = it }
+            lifecycleScope.launch {
+                state.page?.let { adapter.submitData(it) }
             }
-        }
-        viewModel.loadMoreResult.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is DataHolder.Success -> {
-                    setLoadMore(false)
-                    result.data?.results?.let { searchItems ->
-                        val lastPos = searchResults.size - 1
-                        searchResults.addAll(searchItems.filter { it.mediaType != "person" })
-                        adapter.notifyItemRangeInserted(lastPos, searchItems.size)
-                    }
-                }
-                is DataHolder.Loading -> {
-                    setLoadMore(true)
-                }
-                is DataHolder.Failure -> {
-                    setLoadMore(false)
-                    Snackbar.make(binding.loadMoreBar, result.errorData.message, Snackbar.LENGTH_LONG).show()
-                }
-                else -> {
-                    setLoadMore(false)
-                    Snackbar.make(binding.loadMoreBar, getString(R.string.general_error), Snackbar.LENGTH_LONG).show()
+            state.errorVisibility?.let {
+                binding.mainListErrorMsg.visibility = it
+                binding.retryButton.visibility = it
+                state.errorMessage?.let { binding.mainListErrorMsg.text = state.errorMessage }
+                state.errorMessageResource?.let {
+                    binding.mainListErrorMsg.text = getString(state.errorMessageResource)
                 }
             }
         }
     }
 
     private fun initRecyclerView() {
-        adapter = SearchResultAdapter(searchResults) { searchItem ->
+        adapter = SearchResultPagingAdapter { searchItem ->
             val mediaType = MediaViewModel.Companion.MediaType.values().find { it.type == searchItem.mediaType }
             mediaType?.let {
                 val action = SearchFragmentDirections.actionSearchFragmentToMediaDetailFragment(searchItem.id, it)
                 findNavController().safeNavigate(action)
             }
         }
-        binding.userList.adapter = adapter
-        binding.userList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                val lastPosition = layoutManager.findLastVisibleItemPosition()
-                if (lastPosition == adapter.itemCount - 5) {
-                    viewModel.loadNextPage()
-                }
-            }
-        })
+        adapter.addLoadStateListener {
+            Log.d("Zivi", "loading state: ${it.toString()}")
+            viewModel.dataHolderToViewState(DataHolder.Loading)
+        }
+        binding.userList.adapter = adapter.withLoadStateHeaderAndFooter(
+            header = SearchLoadStateAdapter { adapter.retry() },
+            footer = SearchLoadStateAdapter { adapter.retry() }
+        )
     }
 
     private fun doSearch(v: View) {
@@ -166,7 +123,8 @@ class SearchFragment : Fragment() {
         // Dismiss keyboard
         dismissKeyboard(v.windowToken)
         viewModel.setQuery(query)
-        viewModel.searchMedia()
+//        viewModel.searchMedia()
+        viewModel.searchMediaPaging()
     }
 
     private fun dismissKeyboard(windowToken: IBinder) {

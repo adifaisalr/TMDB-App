@@ -70,6 +70,7 @@ dependencies {
     implementation deps.hilt.android
     implementation deps.okhttp.mock_web_server
     implementation deps.okhttp.logging_interceptor
+    implementation deps.paging.paging_runtime
 
     implementation deps.fb_shimmer
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'

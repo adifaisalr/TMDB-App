@@ -46,6 +46,7 @@ versions.vectordrawable = "1.1.0"
 versions.hilt = "2.38.1"
 versions.mockk = "1.9.3"
 versions.fb_shimmer = "0.5.0"
+versions.paging = "3.1.1"
 ext.versions = versions
 
 def build_versions = [:]
@@ -60,6 +61,10 @@ def deps = [:]
 def activity = [:]
 activity.activity_ktx = "androidx.activity:activity-ktx:$versions.activity"
 deps.activity = activity
+
+def paging = [:]
+paging.paging_runtime = "androidx.paging:paging-runtime:$versions.paging"
+deps.paging = paging
 
 deps.android_gradle_plugin = "com.android.tools.build:gradle:$versions.android_gradle_plugin"
 
