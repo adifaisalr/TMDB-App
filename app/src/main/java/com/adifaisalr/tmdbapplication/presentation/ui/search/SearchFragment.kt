@@ -3,7 +3,6 @@ package com.adifaisalr.tmdbapplication.presentation.ui.search
 import android.content.Context
 import android.os.Bundle
 import android.os.IBinder
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +17,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.adifaisalr.tmdbapplication.databinding.FragmentSearchBinding
 import com.adifaisalr.tmdbapplication.domain.model.SearchItem
-import com.adifaisalr.tmdbapplication.domain.model.dataholder.DataHolder
 import com.adifaisalr.tmdbapplication.presentation.ui.MainViewModel
 import com.adifaisalr.tmdbapplication.presentation.ui.adapter.SearchLoadStateAdapter
 import com.adifaisalr.tmdbapplication.presentation.ui.adapter.SearchResultPagingAdapter
@@ -107,10 +105,6 @@ class SearchFragment : Fragment() {
                 val action = SearchFragmentDirections.actionSearchFragmentToMediaDetailFragment(searchItem.id, it)
                 findNavController().safeNavigate(action)
             }
-        }
-        adapter.addLoadStateListener {
-            Log.d("Zivi", "loading state: ${it.toString()}")
-            viewModel.dataHolderToViewState(DataHolder.Loading)
         }
         binding.userList.adapter = adapter.withLoadStateHeaderAndFooter(
             header = SearchLoadStateAdapter { adapter.retry() },
