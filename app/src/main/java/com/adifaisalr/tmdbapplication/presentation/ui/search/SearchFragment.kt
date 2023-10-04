@@ -1,31 +1,55 @@
 package com.adifaisalr.tmdbapplication.presentation.ui.search
 
-import android.content.Context
 import android.os.Bundle
-import android.os.IBinder
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.adifaisalr.tmdbapplication.R
-import com.adifaisalr.tmdbapplication.databinding.FragmentSearchBinding
+import com.adifaisalr.tmdbapplication.data.api.Api
 import com.adifaisalr.tmdbapplication.domain.model.SearchItem
-import com.adifaisalr.tmdbapplication.domain.model.dataholder.DataHolder
 import com.adifaisalr.tmdbapplication.presentation.ui.MainViewModel
-import com.adifaisalr.tmdbapplication.presentation.ui.adapter.SearchResultAdapter
-import com.adifaisalr.tmdbapplication.presentation.ui.home.HomeFragmentDirections
-import com.adifaisalr.tmdbapplication.presentation.ui.media.MediaViewModel
-import com.adifaisalr.tmdbapplication.presentation.util.NavigationUtils.safeNavigate
-import com.google.android.material.snackbar.Snackbar
+import com.adifaisalr.tmdbapplication.presentation.util.OnBottomReached
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,156 +58,140 @@ class SearchFragment : Fragment() {
     private val viewModel by viewModels<SearchViewModel>()
     val mainViewModel: MainViewModel by activityViewModels()
 
-    private var _binding: FragmentSearchBinding? = null
-    private val binding get() = _binding!!
-
-    lateinit var adapter: SearchResultAdapter
-    var searchResults: ArrayList<SearchItem> = arrayListOf()
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSearchBinding.inflate(layoutInflater, container, false)
-        return binding.root
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                SearchScreen()
+            }
+        }
+    }
+
+    @OptIn(ExperimentalComposeUiApi::class)
+    @Composable
+    fun SearchScreen(
+        viewModel: SearchViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    ) {
+        val keyboard = LocalSoftwareKeyboardController.current
+        var keyword by remember { mutableStateOf("") }
+        val listState = rememberLazyListState()
+        val viewState by viewModel.stateFlow.collectAsStateWithLifecycle()
+
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(10.dp)
+        ) {
+            Row {
+                OutlinedTextField(
+                    modifier = Modifier.weight(1f),
+                    value = keyword,
+                    onValueChange = {
+                        keyword = it
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Search,
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onSearch = {
+                            keyboard?.hide()
+                            doSearch(keyword)
+                        }
+                    )
+                )
+                Button(
+                    onClick = {
+                        keyboard?.hide()
+                        doSearch(keyword)
+                    }
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_search_24),
+                        contentDescription = "search icon"
+                    )
+                }
+            }
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                state = listState,
+                verticalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                when {
+                    viewState.isLoading && viewState.searchItemList.isEmpty() -> {
+                        item { LoadingItemView() }
+                    }
+
+                    viewState.searchItemList.isEmpty() && keyword.isNotEmpty() -> {
+                        item {
+                            Text(text = getString(R.string.empty_search_result))
+                        }
+                    }
+
+                    else -> {
+                        items(viewState.searchItemList.filter { it.mediaType != "person" }) { searchItem ->
+                            SearchItem(searchItem = searchItem)
+                        }
+                        if (!viewState.isLastBatch && viewState.isLoading) {
+                            item { LoadingItemView() }
+                        }
+                    }
+                }
+            }
+            listState.OnBottomReached(isLastPage = viewState.isLastBatch) {
+                viewModel.loadNextPage()
+            }
+        }
+    }
+
+    @Composable
+    fun SearchItem(searchItem: SearchItem) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            AsyncImage(
+                modifier = Modifier.width(50.dp),
+                model = Api.DEFAULT_BASE_IMAGE_URL + Api.IMAGE_SIZE_W92 + searchItem.posterPath,
+                contentDescription = "",
+            )
+            Text(
+                modifier = Modifier.padding(10.dp),
+                text = searchItem.title,
+            )
+        }
+    }
+
+    @Composable
+    fun LoadingItemView(
+        modifier: Modifier = Modifier,
+    ) {
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(vertical = 24.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(32.dp),
+            )
+        }
+    }
+
+    @Preview(showBackground = true)
+    @Composable
+    private fun PreviewLoadingItemView() {
+        LoadingItemView()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.hide()
         mainViewModel.updateBottomNav(false)
-        initSearchInputListener()
-        initRecyclerView()
-        observeViewModel()
     }
 
-    private fun initSearchInputListener() {
-        binding.input.setOnEditorActionListener { view: View, actionId: Int, _: KeyEvent? ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                doSearch(view)
-                true
-            } else {
-                false
-            }
-        }
-        binding.input.setOnKeyListener { view: View, keyCode: Int, event: KeyEvent ->
-            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                doSearch(view)
-                true
-            } else {
-                false
-            }
-        }
-        binding.searchBtn.setOnClickListener { view ->
-            doSearch(view)
-        }
-    }
-
-    private fun clearAdapter() {
-        searchResults.clear()
-        adapter.notifyDataSetChanged()
-    }
-
-    private fun observeViewModel() {
-        viewModel.searchResult.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is DataHolder.Success -> {
-                    setLoading(false)
-                    if (result.data?.results.isNullOrEmpty()) {
-                        clearAdapter()
-                        setError(getString(R.string.empty_search_result, viewModel.query))
-                    } else {
-                        result.data?.results?.let { searchItems ->
-                            searchResults.clear()
-                            searchResults.addAll(searchItems.filter { it.mediaType != "person" })
-                            adapter.notifyDataSetChanged()
-                        }
-                    }
-                }
-                is DataHolder.Loading -> {
-                    setLoading(true)
-                    setError(null)
-                }
-                is DataHolder.Failure -> {
-                    setLoading(false)
-                    clearAdapter()
-                    setError(result.errorData.message)
-                }
-                else -> {
-                    setLoading(false)
-                    clearAdapter()
-                    setError(getString(R.string.general_error))
-                }
-            }
-        }
-        viewModel.loadMoreResult.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is DataHolder.Success -> {
-                    setLoadMore(false)
-                    result.data?.results?.let { searchItems ->
-                        val lastPos = searchResults.size - 1
-                        searchResults.addAll(searchItems.filter { it.mediaType != "person" })
-                        adapter.notifyItemRangeInserted(lastPos, searchItems.size)
-                    }
-                }
-                is DataHolder.Loading -> {
-                    setLoadMore(true)
-                }
-                is DataHolder.Failure -> {
-                    setLoadMore(false)
-                    Snackbar.make(binding.loadMoreBar, result.errorData.message, Snackbar.LENGTH_LONG).show()
-                }
-                else -> {
-                    setLoadMore(false)
-                    Snackbar.make(binding.loadMoreBar, getString(R.string.general_error), Snackbar.LENGTH_LONG).show()
-                }
-            }
-        }
-    }
-
-    private fun initRecyclerView() {
-        adapter = SearchResultAdapter(searchResults) { searchItem ->
-            val mediaType = MediaViewModel.Companion.MediaType.values().find { it.type == searchItem.mediaType }
-            mediaType?.let {
-                val action = SearchFragmentDirections.actionSearchFragmentToMediaDetailFragment(searchItem.id, it)
-                findNavController().safeNavigate(action)
-            }
-        }
-        binding.userList.adapter = adapter
-        binding.userList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                val lastPosition = layoutManager.findLastVisibleItemPosition()
-                if (lastPosition == adapter.itemCount - 5) {
-                    viewModel.loadNextPage()
-                }
-            }
-        })
-    }
-
-    private fun doSearch(v: View) {
-        val query = binding.input.text.toString()
-        // Dismiss keyboard
-        dismissKeyboard(v.windowToken)
-        viewModel.setQuery(query)
-        viewModel.searchMedia()
-    }
-
-    private fun dismissKeyboard(windowToken: IBinder) {
-        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        imm?.hideSoftInputFromWindow(windowToken, 0)
-    }
-
-    private fun setLoading(isLoading: Boolean) {
-        binding.loading.visibility = if (isLoading) View.VISIBLE else View.GONE
-    }
-
-    private fun setLoadMore(isLoading: Boolean) {
-        binding.loadMoreBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-    }
-
-    private fun setError(errorMessage: String?) {
-        binding.error.visibility = if (errorMessage.isNullOrEmpty()) View.GONE else View.VISIBLE
-        binding.error.text = errorMessage
+    private fun doSearch(keyword: String) {
+        viewModel.setQuery(keyword)
+        viewModel.loadNextPage()
+        Toast.makeText(requireContext(), keyword, Toast.LENGTH_SHORT).show()
     }
 }
