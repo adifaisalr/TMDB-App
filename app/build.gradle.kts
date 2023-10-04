@@ -1,27 +1,41 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.dagger.hilt.android")
+    id("com.google.devtools.ksp")
 }
 
 val apikeyPropertiesFile = rootProject.file("apikey.properties")
 val apikeyProperties = Properties()
 apikeyProperties.load(FileInputStream(apikeyPropertiesFile))
 
+fun <T> String.asPropertiesFile(block: Properties.() -> T): T? {
+    file(this).takeIf { it.canRead() }?.inputStream()?.use {
+        val properties = Properties().apply {
+            load(it)
+        }
+        return properties.block()
+    }
+    return null
+}
+
 android {
     namespace = "com.adifaisalr.tmdbapplication"
-    compileSdk = libs.versions.compilesdk.get().toInt()
+    compileSdk = libs.versions.compileSdk.get().toInt()
     buildToolsVersion = "33.0.0"
 
     defaultConfig {
         applicationId = "com.adifaisalr.tmdbapplication"
-        minSdk = libs.versions.minsdk.get().toInt()
-        targetSdk = libs.versions.targetsdk.get().toInt()
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
 
-        buildConfigField("String", "API_KEY_V3", apikeyProperties['API_KEY_V3'])
+        buildConfigField("String", "API_KEY_V3", apikeyProperties.getProperty("API_KEY_V3"))
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -37,10 +51,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = "11"
     }
     dataBinding {
-        enabled = true
+        isEnabled = true
     }
     buildFeatures {
         viewBinding = true
@@ -64,45 +78,42 @@ dependencies {
 
     implementation(libs.glide.runtime)
     implementation(libs.annotations)
-    implementation libs.navigation.fragment
-    implementation deps.navigation.ui.ktx
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.dagger.hilt.android)
-    implementation deps.okhttp.mock_web_server
-    implementation deps.okhttp.logging_interceptor
+    implementation(libs.okhttp.mockwebserver)
+    implementation(libs.okhttp.logginginterceptor)
 
-    implementation deps.fb_shimmer
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation(libs.fb.shimmer)
 
     // Jetpack Compose
-    def composeBom = platform("androidx.compose:compose-bom:$versions.compose_bom")
-    implementation composeBom
-    androidTestImplementation composeBom
-    implementation deps.compose.material3
-    implementation deps.compose.ui_tooling_preview
-    debugImplementation deps.compose.ui_tooling
-    implementation deps.compose.activity
-    implementation deps.compose.viewmodel
-    implementation deps.compose.livedata
+    implementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.compose.bom)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.androidx.compose.activity)
+    implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.compose.runtime.livedata)
 
-    debugImplementation deps.flipper.flipper
-    debugImplementation deps.flipper.network
-    debugImplementation deps.soloader
+    debugImplementation(libs.flipper)
+    debugImplementation(libs.flipper.network)
+    debugImplementation(libs.soloader)
+    releaseImplementation(libs.flipper.noop)
 
-    releaseImplementation  deps.flipper.noop
+    ksp(libs.lifecycle.compiler)
+    ksp(libs.glide.compiler)
+    ksp(libs.dagger.hilt.compiler)
 
-    kapt(libs.lifecycle.compiler)
-    kapt(libs.glide.compiler)
-    kapt(libs.dagger.hilt.compiler)
+    testImplementation(project(":app"))
+    testImplementation(deps.junit)
+    testImplementation(libs.okhttp.mockwebserver)
+    testImplementation(deps.arch_core.testing)
+    testImplementation(deps.mockito.core)
+    testImplementation(deps.coroutines.android)
+    testImplementation(deps.coroutines.test)
+    testImplementation(deps.mockk)
 
-    testImplementation project(path: ':app')
-    testImplementation deps.junit
-    testImplementation deps.okhttp.mock_web_server
-    testImplementation deps.arch_core.testing
-    testImplementation deps.mockito.core
-    testImplementation deps.coroutines.android
-    testImplementation deps.coroutines.test
-    testImplementation deps.mockk
-
-    androidTestImplementation deps.espresso.core
-    androidTestImplementation deps.espresso.contrib
+    androidTestImplementation(deps.espresso.core)
+    androidTestImplementation(deps.espresso.contrib)
 }
