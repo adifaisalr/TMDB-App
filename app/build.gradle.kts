@@ -26,7 +26,6 @@ fun <T> String.asPropertiesFile(block: Properties.() -> T): T? {
 android {
     namespace = "com.adifaisalr.tmdbapplication"
     compileSdk = libs.versions.compileSdk.get().toInt()
-    buildToolsVersion = "33.0.0"
 
     defaultConfig {
         applicationId = "com.adifaisalr.tmdbapplication"
@@ -54,14 +53,15 @@ android {
         jvmTarget = "11"
     }
     dataBinding {
-        isEnabled = true
+        enable = true
     }
     buildFeatures {
         viewBinding = true
         compose = true
+        buildConfig = true
     }
     composeOptions{
-        kotlinCompilerExtensionVersion = "1.4.8"
+        kotlinCompilerExtensionVersion = "1.5.2"
     }
 }
 
@@ -106,14 +106,13 @@ dependencies {
     ksp(libs.dagger.hilt.compiler)
 
     testImplementation(project(":app"))
-    testImplementation(deps.junit)
+    testImplementation(libs.junit)
     testImplementation(libs.okhttp.mockwebserver)
-    testImplementation(deps.arch_core.testing)
-    testImplementation(deps.mockito.core)
-    testImplementation(deps.coroutines.android)
-    testImplementation(deps.coroutines.test)
-    testImplementation(deps.mockk)
+    testImplementation(libs.arch.core.testing)
+    testImplementation(libs.coroutines.android)
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.mockk)
 
-    androidTestImplementation(deps.espresso.core)
-    androidTestImplementation(deps.espresso.contrib)
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.espresso.contrib)
 }
