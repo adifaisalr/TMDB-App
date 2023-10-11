@@ -1,0 +1,143 @@
+[versions]
+activity = '1.1.0'
+androidGradlePlugin = '8.1.2'
+annotations = "1.0.0"
+appcompat = "1.3.0"
+arch-core = "2.1.0"
+benchmark = "1.1.0-alpha01"
+cardview = "1.0.0"
+constraintlayout = "2.1.4"
+androidx-corektx = "1.12.0"
+androidx-navigation = "2.7.3"
+coroutines = "1.4.1"
+dexmaker = "2.2.0"
+espresso = "3.2.0"
+fragment = "1.2.0"
+glide = "4.12.0"
+hamcrest = "1.3"
+junit = "4.12"
+kotlin = "1.9.0"
+core-ktx = "1.9.0"
+lifecycle = "2.6.2"
+material = "1.9.0"
+mockito = "2.25.0"
+mockito-all = "1.10.19"
+mockito-android = "2.25.0"
+navigation = "2.4.1"
+okhttp = "4.9.1"
+paging = "3.0.0-beta01"
+recyclerview = "1.2.0-beta01"
+retrofit = "2.9.0"
+robolectric = "4.2"
+room = "2.3.0-alpha04"
+timber = "4.7.1"
+transition = "1.3.0"
+work = "2.4.0"
+support = "28.0.0"
+spinkit = "1.4.0"
+multidex = "2.0.1"
+flipper = "0.223.0"
+soloader = "0.10.5"
+vectordrawable = "1.1.0"
+hilt = "2.48"
+mockk = "1.9.3"
+fb_shimmer = "0.5.0"
+androidx-compose-bom = "2023.09.02"
+compose-compiler = "1.4.0"
+androidx-lifecycle-compose = "2.6.2"
+androidx-lifecycle-runtime-compose = "2.6.2"
+androidx-activity-compose = "1.7.2"
+androidxHiltNavigationCompose = "1.0.0"
+coil = "2.4.0"
+ksp = "1.9.0-1.0.13"
+# @keep
+minSdk = "23"
+targetSdk = "33"
+compileSdk = "34"
+version-catalog-update = "0.8.1"
+
+[libraries]
+android-build-gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib" }
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+annotations = { group = "androidx.annotation", name = "annotation", version.ref = "annotations" }
+fb-shimmer = { module = "com.facebook.shimmer:shimmer", version.ref = "fb_shimmer" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+junit = { module = "junit:junit", version.ref = "junit" }
+# coroutine
+coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+# arch core
+arch-core-runtime = { module = "androidx.arch.core:core-runtime", version.ref = "arch-core" }
+arch-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "arch-core" }
+# espresso
+espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
+espresso-contrib = { module = "androidx.test.espresso:espresso-contrib", version.ref = "espresso" }
+espresso-intents = { module = "androidx.test.espresso:espresso-intents", version.ref = "espresso" }
+# lifecycle
+lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime", version.ref = "lifecycle" }
+lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
+lifecycle-java8 = { group = "androidx.lifecycle", name = "lifecycle-common-java8", version.ref = "lifecycle" }
+lifecycle-compiler = { group = "androidx.lifecycle", name = "lifecycle-compiler", version.ref = "lifecycle" }
+lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+lifecycle-viewmodel-savedstate = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-savedstate", version.ref = "lifecycle" }
+lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle" }
+# retrofit
+retrofit-runtime = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+retrofit-mock = { group = "com.squareup.retrofit2", name = "retrofit-mock", version.ref = "retrofit" }
+# timber
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+# compose
+androidx-compose-activity = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
+androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "androidx-compose-bom" }
+androidx-compose-foundation = { module = "androidx.compose.foundation:foundation" }
+androidx-compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
+androidx-compose-runtime = { module = "androidx.compose.runtime:runtime" }
+androidx-compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
+androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+androidx-compose-ui-viewbinding = { module = "androidx.compose.ui:ui-viewbinding" }
+# hilt
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
+dagger-hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
+dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+dagger-hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
+# navigation
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
+androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "androidx-navigation" }
+androidx-navigation-safe-args-gradle-plugin = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "androidx-navigation" }
+androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "androidx-navigation" }
+# coil
+coil-kt-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+# glide
+glide-runtime = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
+# okhttp
+okhttp-mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "okhttp" }
+okhttp-logginginterceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
+# flipper
+flipper = { module = "com.facebook.flipper:flipper", version.ref = "flipper" }
+flipper-network = { module = "com.facebook.flipper:flipper-network-plugin", version.ref = "flipper" }
+flipper-noop = { module = "com.facebook.flipper:flipper-noop", version.ref = "flipper" }
+soloader = { module = "com.facebook.soloader:soloader", version.ref = "soloader" }
+
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "version-catalog-update" }
+
+[bundles]
+lifecycle = ["lifecycle-runtime", "lifecycle-java8", "lifecycle-viewmodel-ktx", "lifecycle-viewmodel-savedstate", "lifecycle-livedata-ktx"]
