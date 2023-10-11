@@ -1,8 +1,12 @@
 package com.adifaisalr.tmdbapplication.di
 
+import android.app.Application
+import androidx.room.Room
 import com.adifaisalr.tmdbapplication.data.api.Api
 import com.adifaisalr.tmdbapplication.data.api.MyCallAdapterFactory
 import com.adifaisalr.tmdbapplication.data.api.TmdbService
+import com.adifaisalr.tmdbapplication.data.db.MediaDao
+import com.adifaisalr.tmdbapplication.data.db.MediaDb
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,5 +29,20 @@ class ApplicationModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(TmdbService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideDb(app: Application): MediaDb {
+        return Room
+            .databaseBuilder(app, MediaDb::class.java, "tmdb.db")
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideMediaDao(db: MediaDb): MediaDao {
+        return db.mediaDao()
     }
 }

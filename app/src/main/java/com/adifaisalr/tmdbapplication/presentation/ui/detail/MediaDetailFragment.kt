@@ -49,7 +49,8 @@ class MediaDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentMediaDetailBinding.inflate(inflater, container, false)
+        _binding = FragmentMediaD
+        etailBinding.inflate(inflater, container, false)
         return binding.root
     }
 

@@ -88,7 +88,7 @@ dependencies {
 
     // Jetpack Compose
     implementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.bom)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)
@@ -104,9 +104,15 @@ dependencies {
     debugImplementation(libs.soloader)
     releaseImplementation(libs.flipper.noop)
 
+    // room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    annotationProcessor(libs.room.compiler)
+
     ksp(libs.lifecycle.compiler)
     ksp(libs.glide.compiler)
     ksp(libs.dagger.hilt.compiler)
+    ksp(libs.room.compiler)
 
     testImplementation(project(":app"))
     testImplementation(libs.junit)

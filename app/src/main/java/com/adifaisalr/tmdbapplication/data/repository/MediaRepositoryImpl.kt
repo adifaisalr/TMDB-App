@@ -1,6 +1,7 @@
 package com.adifaisalr.tmdbapplication.data.repository
 
 import com.adifaisalr.tmdbapplication.data.api.TmdbService
+import com.adifaisalr.tmdbapplication.data.db.MediaDao
 import com.adifaisalr.tmdbapplication.domain.model.DiscoverMedia
 import com.adifaisalr.tmdbapplication.domain.model.Media
 import com.adifaisalr.tmdbapplication.domain.model.MediaReview
@@ -11,7 +12,8 @@ import com.adifaisalr.tmdbapplication.domain.model.dataholder.DataHolder
 import com.adifaisalr.tmdbapplication.domain.repository.MediaRepository
 
 class MediaRepositoryImpl(
-    private val tmdbService: TmdbService
+    private val tmdbService: TmdbService,
+    private val mediaDao: MediaDao,
 ) : MediaRepository {
 
     override suspend fun getTrendingMedias(mediaType: String, timeWindow: String): DataHolder<TrendingMedia> {

@@ -1,10 +1,14 @@
 package com.adifaisalr.tmdbapplication.domain.model
 
 import androidx.annotation.Keep
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 @Keep
+@Entity
 data class Media(
+    @PrimaryKey
     @SerializedName("id")
     val id: Int,
     @SerializedName(value = "title", alternate = ["name"])
@@ -18,5 +22,6 @@ data class Media(
     @SerializedName(value = "release_date", alternate = ["first_air_date"])
     val releaseDate: String,
     @SerializedName("vote_average")
-    val rating: Double
+    val rating: Double,
+    var isFavorite: Boolean = false,
 )
