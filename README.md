@@ -1,6 +1,10 @@
 # TMDB-App
 Simple App to browse Movies / TV Shows using [TMDB](https://www.themoviedb.org/) API
 
+Prerequisite :
+- Android Studio (Girrafe or later)
+- JDK version 17
+
 This app was initially written using the following Architecture Components:
 - ViewModel
 - LiveData
