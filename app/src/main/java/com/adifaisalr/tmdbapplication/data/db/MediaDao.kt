@@ -15,17 +15,20 @@ abstract class MediaDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertMedia(media: Media): Long
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertAllMedias(cities: List<Media>): List<Long>
-
-    @Query("DELETE FROM `Media`")
-    abstract suspend fun deleteAllMedias(): Int
+    @Query("DELETE FROM `Media` WHERE id = :id")
+    abstract suspend fun deleteMedia(id: Int): Int
 
     @Query("SELECT * FROM `Media`")
-    abstract fun getAllMedias(): List<Media>
+    abstract fun loadAllMedias(): List<Media>
+
+    @Query("SELECT * FROM `Media` WHERE id = :id")
+    abstract fun loadMediaById(id: Int): Media?
 
     @Query("SELECT * FROM `Media` WHERE isFavorite = 1")
-    abstract fun getFavoriteMedias(): List<Media>
+    abstract fun loadAllFavoriteMedias(): List<Media>
+
+    @Query("SELECT * FROM `Media` WHERE isFavorite = 1 AND id = :id")
+    abstract fun loadFavoriteMediaById(id: Int): Media?
 
     @Update
     abstract suspend fun updateMedia(media: Media): Int

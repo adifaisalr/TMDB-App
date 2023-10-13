@@ -1,6 +1,7 @@
 package com.adifaisalr.tmdbapplication.data.api
 
 import com.adifaisalr.tmdbapplication.domain.model.DiscoverMedia
+import com.adifaisalr.tmdbapplication.domain.model.HomeSectionMedia
 import com.adifaisalr.tmdbapplication.domain.model.Media
 import com.adifaisalr.tmdbapplication.domain.model.MediaReview
 import com.adifaisalr.tmdbapplication.domain.model.PopularMedia
@@ -19,19 +20,19 @@ interface TmdbService {
     suspend fun getTrending(
         @Path("media_type") mediaType: String,
         @Path("time_window") timeWindow: String
-    ): DataHolder<TrendingMedia>
+    ): DataHolder<HomeSectionMedia>
 
     @GET("discover/movie")
-    suspend fun getDiscoverMovie(): DataHolder<DiscoverMedia>
+    suspend fun getDiscoverMovie(): DataHolder<HomeSectionMedia>
 
     @GET("discover/tv")
-    suspend fun getDiscoverTv(): DataHolder<DiscoverMedia>
+    suspend fun getDiscoverTv(): DataHolder<HomeSectionMedia>
 
     @GET("movie/popular")
-    suspend fun getPopularMovie(): DataHolder<PopularMedia>
+    suspend fun getPopularMovie(): DataHolder<HomeSectionMedia>
 
     @GET("tv/popular")
-    suspend fun getPopularTv(): DataHolder<PopularMedia>
+    suspend fun getPopularTv(): DataHolder<HomeSectionMedia>
 
     @GET("movie/{movie_id}")
     suspend fun getMovieDetail(@Path("movie_id") movieId: Int): DataHolder<Media>

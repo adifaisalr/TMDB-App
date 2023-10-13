@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,11 +45,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.fragment.findNavController
 import coil.compose.AsyncImage
 import com.adifaisalr.tmdbapplication.R
 import com.adifaisalr.tmdbapplication.data.api.Api
 import com.adifaisalr.tmdbapplication.domain.model.SearchItem
 import com.adifaisalr.tmdbapplication.presentation.ui.MainViewModel
+import com.adifaisalr.tmdbapplication.presentation.ui.home.HomeFragmentDirections
+import com.adifaisalr.tmdbapplication.presentation.ui.media.MediaViewModel
+import com.adifaisalr.tmdbapplication.presentation.util.NavigationUtils.safeNavigate
 import com.adifaisalr.tmdbapplication.presentation.util.OnBottomReached
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -65,7 +70,7 @@ class SearchFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                SearchScreen()
+                SearchScreen(viewModel)
             }
         }
     }
@@ -79,6 +84,14 @@ class SearchFragment : Fragment() {
         var keyword by remember { mutableStateOf("") }
         val listState = rememberLazyListState()
         val viewState by viewModel.stateFlow.collectAsStateWithLifecycle()
+
+        val onItemClick: ((SearchItem) -> Unit) = { item ->
+            val mediaType = MediaViewModel.Companion.MediaType.values().find { it.type == item.mediaType }
+            mediaType?.let {
+                val action = HomeFragmentDirections.actionGlobalMediaDetailFragment(item.id, it)
+                findNavController().safeNavigate(action)
+            }
+        }
 
         Column(
             Modifier
@@ -132,7 +145,10 @@ class SearchFragment : Fragment() {
 
                     else -> {
                         items(viewState.searchItemList.filter { it.mediaType != "person" }) { searchItem ->
-                            SearchItem(searchItem = searchItem)
+                            SearchItemView(
+                                searchItem = searchItem,
+                                onItemClick = onItemClick,
+                            )
                         }
                         if (!viewState.isLastBatch && viewState.isLoading) {
                             item { LoadingItemView() }
@@ -143,37 +159,6 @@ class SearchFragment : Fragment() {
             listState.OnBottomReached(isLastPage = viewState.isLastBatch) {
                 viewModel.loadNextPage()
             }
-        }
-    }
-
-    @Composable
-    fun SearchItem(searchItem: SearchItem) {
-        Row(modifier = Modifier.fillMaxWidth()) {
-            AsyncImage(
-                modifier = Modifier.width(50.dp),
-                model = Api.DEFAULT_BASE_IMAGE_URL + Api.IMAGE_SIZE_W92 + searchItem.posterPath,
-                contentDescription = "",
-            )
-            Text(
-                modifier = Modifier.padding(10.dp),
-                text = searchItem.title,
-            )
-        }
-    }
-
-    @Composable
-    fun LoadingItemView(
-        modifier: Modifier = Modifier,
-    ) {
-        Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(vertical = 24.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(32.dp),
-            )
         }
     }
 
@@ -193,5 +178,41 @@ class SearchFragment : Fragment() {
         viewModel.setQuery(keyword)
         viewModel.loadNextPage()
         Toast.makeText(requireContext(), keyword, Toast.LENGTH_SHORT).show()
+    }
+}
+
+@Composable
+fun SearchItemView(
+    searchItem: SearchItem,
+    onItemClick: (SearchItem) -> Unit,
+) {
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .clickable { onItemClick(searchItem) }) {
+        AsyncImage(
+            modifier = Modifier.width(50.dp),
+            model = Api.DEFAULT_BASE_IMAGE_URL + Api.IMAGE_SIZE_W92 + searchItem.posterPath,
+            contentDescription = "",
+        )
+        Text(
+            modifier = Modifier.padding(10.dp),
+            text = searchItem.title,
+        )
+    }
+}
+
+@Composable
+fun LoadingItemView(
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 24.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier.size(32.dp),
+        )
     }
 }

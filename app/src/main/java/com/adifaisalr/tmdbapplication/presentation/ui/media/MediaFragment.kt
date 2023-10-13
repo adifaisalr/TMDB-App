@@ -1,57 +1,244 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.adifaisalr.tmdbapplication.presentation.ui.media
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.viewpager2.widget.ViewPager2
-import com.adifaisalr.tmdbapplication.databinding.FragmentMediaBinding
+import coil.compose.AsyncImage
+import com.adifaisalr.tmdbapplication.R
+import com.adifaisalr.tmdbapplication.data.api.Api
 import com.adifaisalr.tmdbapplication.domain.model.Media
-import com.adifaisalr.tmdbapplication.domain.model.dataholder.DataHolder
-import com.adifaisalr.tmdbapplication.presentation.ui.adapter.HomeBannerAdapter
-import com.adifaisalr.tmdbapplication.presentation.ui.adapter.HomeCarouselAdapter
+import com.adifaisalr.tmdbapplication.presentation.ui.components.ShimmerBrush
 import com.adifaisalr.tmdbapplication.presentation.ui.home.HomeFragmentDirections
 import com.adifaisalr.tmdbapplication.presentation.util.NavigationUtils.safeNavigate
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.yield
 
 @AndroidEntryPoint
 class MediaFragment : Fragment() {
-
-    private var currentPage: Int = 0
-    private var _binding: FragmentMediaBinding? = null
-
     private val viewModel by viewModels<MediaViewModel>()
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
-
-    var popularMedia = arrayListOf<Media>()
-    lateinit var popularAdapter: HomeBannerAdapter
-
-    var trendingMedia = arrayListOf<Media>()
-    lateinit var trendingAdapter: HomeCarouselAdapter
-
-    var discoverMedia = arrayListOf<Media>()
-    lateinit var discoverAdapter: HomeCarouselAdapter
-
-    val handler = Handler(Looper.getMainLooper())
-    lateinit var taskRunnable: Runnable
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentMediaBinding.inflate(inflater, container, false)
-        return binding.root
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MediaScreen(viewModel = viewModel)
+            }
+        }
+    }
+
+    @Composable
+    fun MediaScreen(
+        modifier: Modifier = Modifier,
+        viewModel: MediaViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    ) {
+        val viewState by viewModel.stateFlow.collectAsStateWithLifecycle()
+        val actionClickListener: ((Media) -> Unit) = { media ->
+            val action = HomeFragmentDirections.actionGlobalMediaDetailFragment(media.id, viewModel.mediaType)
+            findNavController().safeNavigate(action)
+        }
+
+        Column(modifier = modifier.fillMaxSize()) {
+            PopularMedia(
+                mediaViewState = viewState.popularMediaViewState,
+                onItemClick = actionClickListener,
+            )
+            Spacer(modifier = Modifier.height(5.dp))
+            CarouselMediaSection(
+                title = "Trending",
+                mediaViewState = viewState.trendingMediaViewState,
+                onItemClick = actionClickListener,
+            )
+            Spacer(modifier = Modifier.height(5.dp))
+            CarouselMediaSection(
+                title = "Discover",
+                mediaViewState = viewState.discoverMediaViewState,
+                onItemClick = actionClickListener,
+            )
+        }
+    }
+
+    @Composable
+    private fun PopularMedia(
+        modifier: Modifier = Modifier,
+        mediaViewState: MediaViewState,
+        onItemClick: (Media) -> Unit,
+    ) {
+        val pagerState = rememberPagerState {
+            mediaViewState.media?.results?.size ?: 0
+        }
+        LaunchedEffect(pagerState.pageCount) {
+            while (pagerState.pageCount > 1) {
+                yield()
+                delay(2000)
+                pagerState.animateScrollToPage(
+                    page = (pagerState.currentPage + 1) % (pagerState.pageCount),
+                    animationSpec = tween(600)
+                )
+            }
+        }
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+                .height(200.dp)
+        ) {
+            when {
+                mediaViewState.isLoading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+
+                !mediaViewState.errorMessage.isNullOrEmpty() -> {
+                    Text(
+                        modifier = Modifier.align(Alignment.Center),
+                        text = mediaViewState.errorMessage,
+                    )
+                }
+
+                else -> {
+                    HorizontalPager(
+                        modifier = Modifier,
+                        state = pagerState
+                    ) { page ->
+                        val media = mediaViewState.media?.results?.get(page)
+                        media?.let {
+                            Box(
+                                modifier = Modifier.clickable {
+                                    onItemClick(media)
+                                },
+                            ) {
+                                AsyncImage(
+                                    model = Api.DEFAULT_BASE_IMAGE_URL + Api.IMAGE_SIZE_W1280 + media.backdropPath,
+                                    fallback = painterResource(id = R.drawable.ic_launcher_background),
+                                    error = painterResource(id = R.drawable.ic_launcher_background),
+                                    contentScale = ContentScale.FillWidth,
+                                    contentDescription = null
+                                )
+                                Text(
+                                    modifier = Modifier
+                                        .padding(10.dp)
+                                        .align(Alignment.BottomStart)
+                                        .shadow(
+                                            elevation = 15.dp,
+                                            spotColor = Color.White, ambientColor = Color.White
+                                        ),
+                                    text = media.title,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun CarouselMediaSection(
+        modifier: Modifier = Modifier,
+        title: String,
+        mediaViewState: MediaViewState,
+        onItemClick: (Media) -> Unit,
+    ) {
+        Column(modifier = modifier.fillMaxWidth()) {
+            Text(
+                modifier = Modifier.padding(10.dp),
+                text = title,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+            )
+            LazyRow(
+                contentPadding = PaddingValues(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                when {
+                    mediaViewState.isLoading -> {
+                        items(3) {
+                            Box(
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .background(ShimmerBrush()),
+                            )
+                        }
+                    }
+
+                    !mediaViewState.errorMessage.isNullOrEmpty() -> {
+                        item {
+                            Text(
+                                modifier = Modifier.height(100.dp),
+                                text = mediaViewState.errorMessage,
+                            )
+                        }
+                    }
+
+                    else -> {
+                        val list = mediaViewState.media?.results ?: emptyList()
+                        items(list) { item ->
+                            AsyncImage(
+                                modifier = Modifier
+                                    .width(100.dp)
+                                    .clickable {
+                                        onItemClick(item)
+                                    },
+                                model = Api.DEFAULT_BASE_IMAGE_URL + Api.IMAGE_SIZE_W92 + item.posterPath,
+                                contentDescription = item.title,
+                                contentScale = ContentScale.FillWidth,
+                                placeholder = ColorPainter(Color.LightGray),
+                                error = ColorPainter(Color.LightGray),
+                                fallback = ColorPainter(Color.LightGray),
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -60,157 +247,7 @@ class MediaFragment : Fragment() {
             val mediaType = MediaViewModel.Companion.MediaType.values().find { it.id == getInt(ARG_MEDIA_TYPE) }
             mediaType?.let { viewModel.mediaType = it }
         }
-        initRecyclerView()
-        observeViewModel()
-        viewModel.getPopularMovies()
-        viewModel.getTrendingMovies()
-        viewModel.getDiscoverMovies()
-    }
-
-    override fun onPause() {
-        handler.removeCallbacks(taskRunnable)
-        Log.d("job", "cancel")
-        super.onPause()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        setAutoSlide()
-        Log.d("job", "resume")
-    }
-
-    private fun setAutoSlide() {
-        taskRunnable = Runnable {
-            if (currentPage == popularMedia.size) {
-                currentPage = 0
-            }
-
-            //The second parameter ensures smooth scrolling
-            _binding?.bannerViewPager?.setCurrentItem(currentPage++, true)
-            handler.postDelayed(taskRunnable, 3500)
-        }
-        handler.removeCallbacks(taskRunnable)
-        taskRunnable.run()
-    }
-
-    private fun initRecyclerView() {
-        val actionClickListener: ((Media) -> Unit) = { media ->
-            val action = HomeFragmentDirections.actionGlobalMediaDetailFragment(media.id, viewModel.mediaType)
-            findNavController().safeNavigate(action)
-        }
-        popularAdapter = HomeBannerAdapter(popularMedia, actionClickListener)
-        binding.bannerViewPager.adapter = popularAdapter
-        binding.bannerViewPager.registerOnPageChangeCallback(
-            object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    currentPage = position
-                }
-            }
-        )
-        trendingAdapter = HomeCarouselAdapter(trendingMedia, actionClickListener)
-        binding.trendingRV.adapter = trendingAdapter
-        discoverAdapter = HomeCarouselAdapter(discoverMedia, actionClickListener)
-        binding.discoverRV.adapter = discoverAdapter
-    }
-
-    private fun observeViewModel() {
-        viewModel.popularMovieResult.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is DataHolder.Loading -> {
-                }
-                is DataHolder.Success -> {
-                    if (result.data?.results.isNullOrEmpty()) {
-                        popularMedia.clear()
-                        popularAdapter.notifyDataSetChanged()
-                    } else {
-                        result.data?.results?.let {
-                            popularMedia.clear()
-                            popularMedia.addAll(it.take(5))
-                            popularAdapter.notifyDataSetChanged()
-                        }
-                    }
-                    binding.trendingRV.visibility = View.VISIBLE
-                    setAutoSlide()
-                }
-                else -> {
-                }
-            }
-
-        }
-        viewModel.trendingMovieResult.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is DataHolder.Loading -> {
-                    setTrendingLoading(true)
-                }
-                is DataHolder.Success -> {
-                    setTrendingLoading(false)
-                    if (result.data?.results.isNullOrEmpty()) {
-                        trendingMedia.clear()
-                        trendingAdapter.notifyDataSetChanged()
-                    } else {
-                        result.data?.results?.let {
-                            trendingMedia.clear()
-                            trendingMedia.addAll(it)
-                            trendingAdapter.notifyDataSetChanged()
-                        }
-                    }
-                    binding.trendingRV.visibility = View.VISIBLE
-                }
-                else -> {
-                    setTrendingLoading(false)
-                }
-            }
-        }
-        viewModel.discoverMovieResult.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is DataHolder.Loading -> {
-                    setDiscoverLoading(true)
-                }
-                is DataHolder.Success -> {
-                    setDiscoverLoading(false)
-                    if (result.data?.results.isNullOrEmpty()) {
-                        discoverMedia.clear()
-                        discoverAdapter.notifyDataSetChanged()
-                    } else {
-                        result.data?.results?.let {
-                            discoverMedia.clear()
-                            discoverMedia.addAll(it)
-                            discoverAdapter.notifyDataSetChanged()
-                        }
-                    }
-                    binding.discoverRV.visibility = View.VISIBLE
-                }
-                else -> {
-                    setDiscoverLoading(false)
-                }
-            }
-        }
-    }
-
-    private fun setTrendingLoading(isLoading: Boolean) {
-        if (isLoading) {
-            binding.trendingShimmerLayout.startShimmer()
-            binding.trendingShimmerLayout.visibility = View.VISIBLE
-        } else {
-            binding.trendingShimmerLayout.stopShimmer()
-            binding.trendingShimmerLayout.visibility = View.GONE
-        }
-    }
-
-    private fun setDiscoverLoading(isLoading: Boolean) {
-        if (isLoading) {
-            binding.discoverhimmerLayout.startShimmer()
-            binding.discoverhimmerLayout.visibility = View.VISIBLE
-        } else {
-            binding.discoverhimmerLayout.stopShimmer()
-            binding.discoverhimmerLayout.visibility = View.GONE
-        }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        viewModel.fetchAllData()
     }
 
     companion object {

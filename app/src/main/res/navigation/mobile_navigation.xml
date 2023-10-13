@@ -16,8 +16,8 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.adifaisalr.tmdbapplication.presentation.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
+        android:name="com.adifaisalr.tmdbapplication.presentation.ui.favorite.FavoriteMediaFragment"
+        android:label="@string/title_favorite"
         tools:layout="@layout/fragment_dashboard" />
     <fragment
         android:id="@+id/mediaDetailFragment"

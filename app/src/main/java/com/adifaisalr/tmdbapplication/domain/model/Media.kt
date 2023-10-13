@@ -23,5 +23,6 @@ data class Media(
     val releaseDate: String,
     @SerializedName("vote_average")
     val rating: Double,
+    var type: String,
     var isFavorite: Boolean = false,
 )

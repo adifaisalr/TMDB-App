@@ -33,6 +33,7 @@ class SearchViewModel @Inject constructor(
         if (input == _query) {
             return
         }
+        searchItemList = emptyList()
         _query = input
     }
 

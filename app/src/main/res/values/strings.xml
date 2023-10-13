@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">TMDB Application</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_favorite">Favorite</string>
     <string name="title_movies">Movies</string>
     <string name="title_tvs">TV Shows</string>
     <string name="title_trending">Trending</string>
@@ -15,4 +15,5 @@
     <string name="search_hint">Search Movie / TV Show</string>
     <string name="empty_search_result">No results for <b>%s</b></string>
     <string name="general_error">Unable to get data, please try again later</string>
+    <string name="empty_favorite_media">No favorite Movie / TV Show</string>
 </resources>
