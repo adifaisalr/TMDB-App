@@ -66,6 +66,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":libs:domain"))
     implementation(libs.retrofit.runtime)
     implementation(libs.retrofit.gson)
     implementation(libs.timber)
@@ -80,6 +81,8 @@ dependencies {
     implementation(libs.annotations)
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.dagger.hilt.android)
     implementation(libs.okhttp.mockwebserver)
     implementation(libs.okhttp.logginginterceptor)
@@ -88,7 +91,7 @@ dependencies {
 
     // Jetpack Compose
     implementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.bom)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)
@@ -104,9 +107,15 @@ dependencies {
     debugImplementation(libs.soloader)
     releaseImplementation(libs.flipper.noop)
 
+    // room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    annotationProcessor(libs.room.compiler)
+
     ksp(libs.lifecycle.compiler)
     ksp(libs.glide.compiler)
     ksp(libs.dagger.hilt.compiler)
+    ksp(libs.room.compiler)
 
     testImplementation(project(":app"))
     testImplementation(libs.junit)

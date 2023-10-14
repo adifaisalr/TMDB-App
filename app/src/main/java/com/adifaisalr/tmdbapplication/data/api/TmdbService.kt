@@ -1,12 +1,10 @@
 package com.adifaisalr.tmdbapplication.data.api
 
-import com.adifaisalr.tmdbapplication.domain.model.DiscoverMedia
-import com.adifaisalr.tmdbapplication.domain.model.Media
-import com.adifaisalr.tmdbapplication.domain.model.MediaReview
-import com.adifaisalr.tmdbapplication.domain.model.PopularMedia
-import com.adifaisalr.tmdbapplication.domain.model.SearchMedia
-import com.adifaisalr.tmdbapplication.domain.model.TrendingMedia
-import com.adifaisalr.tmdbapplication.domain.model.dataholder.DataHolder
+import com.adifaisalr.tmdbapplication.libs.domain.model.HomeSectionMedia
+import com.adifaisalr.tmdbapplication.libs.domain.model.Media
+import com.adifaisalr.tmdbapplication.libs.domain.model.MediaReview
+import com.adifaisalr.tmdbapplication.libs.domain.model.SearchMedia
+import com.adifaisalr.tmdbapplication.libs.domain.model.dataholder.DataHolder
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -19,19 +17,19 @@ interface TmdbService {
     suspend fun getTrending(
         @Path("media_type") mediaType: String,
         @Path("time_window") timeWindow: String
-    ): DataHolder<TrendingMedia>
+    ): DataHolder<HomeSectionMedia>
 
     @GET("discover/movie")
-    suspend fun getDiscoverMovie(): DataHolder<DiscoverMedia>
+    suspend fun getDiscoverMovie(): DataHolder<HomeSectionMedia>
 
     @GET("discover/tv")
-    suspend fun getDiscoverTv(): DataHolder<DiscoverMedia>
+    suspend fun getDiscoverTv(): DataHolder<HomeSectionMedia>
 
     @GET("movie/popular")
-    suspend fun getPopularMovie(): DataHolder<PopularMedia>
+    suspend fun getPopularMovie(): DataHolder<HomeSectionMedia>
 
     @GET("tv/popular")
-    suspend fun getPopularTv(): DataHolder<PopularMedia>
+    suspend fun getPopularTv(): DataHolder<HomeSectionMedia>
 
     @GET("movie/{movie_id}")
     suspend fun getMovieDetail(@Path("movie_id") movieId: Int): DataHolder<Media>

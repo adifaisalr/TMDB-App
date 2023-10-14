@@ -1,8 +1,9 @@
 package com.adifaisalr.tmdbapplication.di
 
 import com.adifaisalr.tmdbapplication.data.api.TmdbService
+import com.adifaisalr.tmdbapplication.data.db.MediaDao
 import com.adifaisalr.tmdbapplication.data.repository.MediaRepositoryImpl
-import com.adifaisalr.tmdbapplication.domain.repository.MediaRepository
+import com.adifaisalr.tmdbapplication.libs.domain.repository.MediaRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +16,7 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideMovieRepository(tmdbService: TmdbService): MediaRepository {
-        return MediaRepositoryImpl(tmdbService)
+    fun provideMovieRepository(tmdbService: TmdbService, dao: MediaDao): MediaRepository {
+        return MediaRepositoryImpl(tmdbService, dao)
     }
 }

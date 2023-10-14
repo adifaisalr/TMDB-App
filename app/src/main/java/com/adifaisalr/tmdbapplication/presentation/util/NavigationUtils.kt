@@ -14,6 +14,11 @@ object NavigationUtils {
         currentDestination?.getAction(direction.actionId)?.run { navigate(direction) }
     }
 
+    fun NavController.safeNavigate(route: String) {
+        val destination = findDestination(route)
+        destination?.let { navigate(route) }
+    }
+
     fun NavController.safeNavigate(
         @IdRes currentDestinationId: Int,
         @IdRes id: Int,
