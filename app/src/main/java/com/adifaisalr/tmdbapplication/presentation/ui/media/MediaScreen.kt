@@ -2,10 +2,6 @@
 
 package com.adifaisalr.tmdbapplication.presentation.ui.media
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -36,70 +32,20 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
 import coil.compose.AsyncImage
 import com.adifaisalr.tmdbapplication.R
 import com.adifaisalr.tmdbapplication.data.api.Api
 import com.adifaisalr.tmdbapplication.domain.model.Media
 import com.adifaisalr.tmdbapplication.presentation.ui.components.ShimmerBrush
-import com.adifaisalr.tmdbapplication.presentation.ui.home.HomeFragmentDirections
 import com.adifaisalr.tmdbapplication.presentation.util.NavigationUtils.safeNavigate
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.yield
-
-@AndroidEntryPoint
-class MediaFragment : Fragment() {
-    private val viewModel by viewModels<MediaViewModel>()
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        var mediaType = MediaViewModel.Companion.MediaType.MOVIES
-        arguments?.takeIf { it.containsKey(ARG_MEDIA_TYPE) }?.apply {
-            MediaViewModel.Companion.MediaType.values().find { it.id == getInt(ARG_MEDIA_TYPE) }?.let {
-                mediaType = it
-            }
-        }
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                MediaScreen(
-                    viewModel = viewModel,
-                    mediaType = mediaType,
-                    navController = findNavController()
-                )
-            }
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        arguments?.takeIf { it.containsKey(ARG_MEDIA_TYPE) }?.apply {
-            val mediaType = MediaViewModel.Companion.MediaType.values().find { it.id == getInt(ARG_MEDIA_TYPE) }
-            mediaType?.let { viewModel.mediaType = it }
-        }
-        viewModel.fetchAllData()
-    }
-
-    companion object {
-        const val ARG_MEDIA_TYPE = "media_type"
-        const val MEDIA_TYPE_MOVIE = 1
-        const val MEDIA_TYPE_TV = 2
-    }
-}
 
 @Composable
 fun MediaScreen(
@@ -110,8 +56,7 @@ fun MediaScreen(
 ) {
     val viewState by viewModel.stateFlow.collectAsStateWithLifecycle()
     val actionClickListener: ((Media) -> Unit) = { media ->
-        val action = HomeFragmentDirections.actionGlobalMediaDetailFragment(media.id, viewModel.mediaType)
-        navController.safeNavigate(action)
+        navController.safeNavigate("mediadetail/${mediaType.id}/${media.id}")
     }
     viewModel.mediaType = mediaType
 

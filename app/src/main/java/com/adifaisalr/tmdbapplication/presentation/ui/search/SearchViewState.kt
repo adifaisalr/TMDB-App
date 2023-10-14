@@ -7,4 +7,5 @@ data class SearchViewState(
     val searchItemList: List<SearchItem> = listOf(),
     val isLastBatch: Boolean = false,
     val isLoading: Boolean = false,
+    val isSearched: Boolean = false,
 ) : BaseViewModel.ViewState

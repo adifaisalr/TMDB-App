@@ -1,10 +1,7 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.adifaisalr.tmdbapplication.presentation.ui.detail
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,95 +16,119 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.fragment.navArgs
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.adifaisalr.tmdbapplication.R
 import com.adifaisalr.tmdbapplication.data.api.Api
 import com.adifaisalr.tmdbapplication.domain.model.Review
-import com.adifaisalr.tmdbapplication.presentation.ui.MainViewModel
 import com.adifaisalr.tmdbapplication.presentation.ui.components.ShimmerBrush
-import dagger.hilt.android.AndroidEntryPoint
+import com.adifaisalr.tmdbapplication.presentation.ui.media.MediaViewModel
 
-@AndroidEntryPoint
-class MediaDetailFragment : Fragment() {
-
-    private val viewModel by viewModels<MediaDetailViewModel>()
-    val mainViewModel: MainViewModel by activityViewModels()
-
-    val args: MediaDetailFragmentArgs by navArgs()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel.mediaId = args.mediaId
-        viewModel.mediaType = args.mediaType
+@Composable
+fun MediaDetailScreen(
+    mediaType: MediaViewModel.Companion.MediaType,
+    mediaId: Int,
+    navController: NavController,
+    viewModel: MediaDetailViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
+    viewModel.mediaId = mediaId
+    viewModel.mediaType = mediaType
+    val viewState by viewModel.stateFlow.collectAsStateWithLifecycle()
+    LaunchedEffect(key1 = Unit) {
+        viewModel.getMovieDetail()
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                MediaDetailScreen(viewModel)
-            }
-        }
-    }
-
-    @Composable
-    fun MediaDetailScreen(
-        viewModel: MediaDetailViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
-    ) {
-        val viewState by viewModel.stateFlow.collectAsStateWithLifecycle()
-        MediaDetailContent(viewState = viewState)
-    }
-
-    @Composable
-    fun MediaDetailContent(
-        modifier: Modifier = Modifier,
-        viewState: MediaDetailViewState,
-    ) {
-        Box(modifier = modifier.fillMaxSize()) {
-            when {
-                viewState.isMediaLoading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-
-                !viewState.error.isNullOrEmpty() -> {
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                ),
+                title = {
                     Text(
-                        modifier = Modifier.align(Alignment.Center),
-                        text = viewState.error,
+                        viewState.media?.title ?: "",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
-                }
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "back"
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { navController.navigate("search") }) {
+                        Icon(
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = "Search"
+                        )
+                    }
+                },
+            )
+        },
+    ) { innerPadding ->
+        MediaDetailContent(
+            modifier = Modifier.padding(innerPadding),
+            viewState = viewState,
+            onClickFavorite = { viewModel.changeFavoriteMedia() },
+        )
+    }
+}
 
-                else -> {
-                    val media = viewState.media!!
-                    mainViewModel.updateActionBarTitle(media.title)
+@Composable
+fun MediaDetailContent(
+    modifier: Modifier = Modifier,
+    viewState: MediaDetailViewState,
+    onClickFavorite: () -> Unit,
+) {
+    Box(modifier = modifier.fillMaxSize()) {
+        when {
+            viewState.isMediaLoading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+
+            !viewState.error.isNullOrEmpty() -> {
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = viewState.error,
+                )
+            }
+
+            else -> {
+                viewState.media?.let { media ->
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -141,7 +162,8 @@ class MediaDetailFragment : Fragment() {
                                 modifier = Modifier
                                     .wrapContentSize(),
                                 enabled = !viewState.isFavoriteLoading,
-                                onClick = { viewModel.changeFavoriteMedia() }) {
+                                onClick = onClickFavorite,
+                            ) {
                                 Text(text = text)
                                 Icon(
                                     painter = painterResource(id = R.drawable.baseline_star_outline_24),
@@ -201,109 +223,103 @@ class MediaDetailFragment : Fragment() {
             }
         }
     }
+}
 
-    @Composable
-    fun ItemReview(
-        review: Review,
-        modifier: Modifier = Modifier,
-    ) {
-        Column(modifier = modifier.padding(10.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                AsyncImage(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape),
-                    model = Api.DEFAULT_BASE_IMAGE_URL + Api.IMAGE_SIZE_W92 + review.authorDetails.avatarPath,
-                    contentDescription = "",
-                    error = painterResource(id = R.drawable.ic_launcher_background),
-                    fallback = painterResource(id = R.drawable.ic_launcher_background),
-                )
-                Text(
-                    modifier = Modifier.padding(horizontal = 10.dp),
-                    text = review.author
-                )
-            }
-            Text(
+@Composable
+fun ItemReview(
+    review: Review,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier.padding(10.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
                 modifier = Modifier
-                    .padding(vertical = 10.dp)
-                    .fillMaxWidth(),
-                text = review.content,
-                fontSize = 12.sp,
-                maxLines = 3,
+                    .size(40.dp)
+                    .clip(CircleShape),
+                model = Api.DEFAULT_BASE_IMAGE_URL + Api.IMAGE_SIZE_W92 + review.authorDetails.avatarPath,
+                contentDescription = "",
+                error = painterResource(id = R.drawable.ic_launcher_background),
+                fallback = painterResource(id = R.drawable.ic_launcher_background),
+            )
+            Text(
+                modifier = Modifier.padding(horizontal = 10.dp),
+                text = review.author
             )
         }
+        Text(
+            modifier = Modifier
+                .padding(vertical = 10.dp)
+                .fillMaxWidth(),
+            text = review.content,
+            fontSize = 12.sp,
+            maxLines = 3,
+        )
     }
+}
 
-    @Composable
-    fun ItemReviewShimmer(
-        modifier: Modifier = Modifier,
-    ) {
-        Column(modifier = modifier.padding(10.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .background(ShimmerBrush()),
-                )
-                Box(
-                    modifier = Modifier
-                        .padding(horizontal = 10.dp)
-                        .width(100.dp)
-                        .height(20.dp)
-                        .background(ShimmerBrush()),
-                )
-            }
+@Composable
+fun ItemReviewShimmer(
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier.padding(10.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Box(
                 modifier = Modifier
-                    .padding(vertical = 10.dp)
-                    .fillMaxWidth()
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(ShimmerBrush()),
+            )
+            Box(
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .width(100.dp)
                     .height(20.dp)
                     .background(ShimmerBrush()),
             )
         }
-    }
-
-    @Preview
-    @Composable
-    fun ReviewItemPreview() {
-        ItemReview(
-            review = Review(
-                author = "Author",
-                authorDetails = Review.AuthorDetails("", "Author", 5.0, "author"),
-                content = "Review content",
-                createdAt = "",
-                updatedAt = "",
-                id = "",
-                url = "",
-            )
+        Box(
+            modifier = Modifier
+                .padding(vertical = 10.dp)
+                .fillMaxWidth()
+                .height(20.dp)
+                .background(ShimmerBrush()),
         )
     }
+}
 
-    @Preview
-    @Composable
-    fun ItemReviewShimmerPreview() {
-        ItemReviewShimmer()
-    }
-
-    @Preview
-    @Composable
-    fun MediaDetailScreenPreview() {
-        MediaDetailContent(
-            viewState = MediaDetailViewState()
+@Preview
+@Composable
+fun ReviewItemPreview() {
+    ItemReview(
+        review = Review(
+            author = "Author",
+            authorDetails = Review.AuthorDetails("", "Author", 5.0, "author"),
+            content = "Review content",
+            createdAt = "",
+            updatedAt = "",
+            id = "",
+            url = "",
         )
-    }
+    )
+}
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity).supportActionBar?.show()
-        mainViewModel.updateBottomNav(false)
-        viewModel.getMovieDetail()
-    }
+@Preview
+@Composable
+fun ItemReviewShimmerPreview() {
+    ItemReviewShimmer()
+}
+
+@Preview
+@Composable
+fun MediaDetailScreenPreview() {
+    MediaDetailContent(
+        viewState = MediaDetailViewState(),
+        onClickFavorite = {},
+    )
 }

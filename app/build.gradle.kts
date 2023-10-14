@@ -80,6 +80,8 @@ dependencies {
     implementation(libs.annotations)
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.dagger.hilt.android)
     implementation(libs.okhttp.mockwebserver)
     implementation(libs.okhttp.logginginterceptor)

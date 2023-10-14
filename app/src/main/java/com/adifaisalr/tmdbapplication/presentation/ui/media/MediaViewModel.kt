@@ -120,8 +120,9 @@ class MediaViewModel @Inject constructor(
             TV_SHOWS(1, "tv", R.string.title_tvs)
         }
 
-        const val TIME_WINDOW_DAY = "day"
+        fun Int.getMediaType() = if (this == 0) MediaType.MOVIES else MediaType.TV_SHOWS
 
+        const val TIME_WINDOW_DAY = "day"
     }
 }
 

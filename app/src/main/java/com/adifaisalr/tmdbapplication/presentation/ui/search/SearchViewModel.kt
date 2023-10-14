@@ -22,19 +22,21 @@ class SearchViewModel @Inject constructor(
     initialState = SearchViewState()
 ) {
 
-    private var _query = ""
-    val query: String
-        get() = _query
-
+    private var query = ""
+    private var isSearched = false
     protected var searchItemList: List<SearchItem> = emptyList()
+
+    fun setSearched(searched: Boolean) {
+        isSearched = searched
+    }
 
     fun setQuery(originalInput: String) {
         val input = originalInput.toLowerCase(Locale.getDefault()).trim()
-        if (input == _query) {
+        if (input == query) {
             return
         }
         searchItemList = emptyList()
-        _query = input
+        query = input
     }
 
     fun loadNextPage() = viewModelScope.launch {
@@ -53,6 +55,7 @@ class SearchViewModel @Inject constructor(
 
             else -> {}
         }
+        isSearched = true
     }
 
     private fun searchItemListReducer(actionResult: SearchActionResult): List<SearchItem> {
@@ -82,6 +85,7 @@ class SearchViewModel @Inject constructor(
             searchItemList = searchItemListReducer(actionResult),
             isLoading = isLoadingReducer(actionResult),
             isLastBatch = oldState.isLastBatchReducer(actionResult),
+            isSearched = isSearched,
         )
     }
 
