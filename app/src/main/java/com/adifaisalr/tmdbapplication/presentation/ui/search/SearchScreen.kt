@@ -52,8 +52,8 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.adifaisalr.tmdbapplication.R
 import com.adifaisalr.tmdbapplication.data.api.Api
-import com.adifaisalr.tmdbapplication.domain.model.SearchItem
-import com.adifaisalr.tmdbapplication.presentation.ui.media.MediaViewModel
+import com.adifaisalr.tmdbapplication.libs.domain.model.MediaType
+import com.adifaisalr.tmdbapplication.libs.domain.model.SearchItem
 import com.adifaisalr.tmdbapplication.presentation.util.NavigationUtils.safeNavigate
 import com.adifaisalr.tmdbapplication.presentation.util.OnBottomReached
 
@@ -69,7 +69,7 @@ fun SearchScreen(
     val viewState by viewModel.stateFlow.collectAsStateWithLifecycle()
 
     val onItemClick: ((SearchItem) -> Unit) = { item ->
-        val mediaType = MediaViewModel.Companion.MediaType.values().find { it.type == item.mediaType }
+        val mediaType = MediaType.values().find { it.type == item.mediaType }
         mediaType?.let {
             navController.safeNavigate("mediadetail/${mediaType.id}/${item.id}")
         }

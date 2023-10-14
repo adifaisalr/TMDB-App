@@ -66,6 +66,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":libs:domain"))
     implementation(libs.retrofit.runtime)
     implementation(libs.retrofit.gson)
     implementation(libs.timber)

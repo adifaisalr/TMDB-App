@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.adifaisalr.tmdbapplication.R
+import com.adifaisalr.tmdbapplication.libs.domain.model.MediaType
 import com.adifaisalr.tmdbapplication.presentation.ui.favorite.FavoriteMediaScreen
 import com.adifaisalr.tmdbapplication.presentation.ui.favorite.FavoriteMediaViewModel
 import com.adifaisalr.tmdbapplication.presentation.ui.media.MediaScreen
@@ -105,7 +106,7 @@ fun HomeScreen(
                 0 -> {
                     val viewModel = hiltViewModel<MediaViewModel>()
                     MediaScreen(
-                        mediaType = MediaViewModel.Companion.MediaType.MOVIES,
+                        mediaType = MediaType.MOVIES,
                         navController = navController,
                         viewModel = viewModel
                     )
@@ -114,7 +115,7 @@ fun HomeScreen(
                 1 -> {
                     val viewModel = hiltViewModel<MediaViewModel>()
                     MediaScreen(
-                        mediaType = MediaViewModel.Companion.MediaType.TV_SHOWS,
+                        mediaType = MediaType.TV_SHOWS,
                         navController = navController,
                         viewModel = viewModel
                     )

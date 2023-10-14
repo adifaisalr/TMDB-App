@@ -1,7 +1,7 @@
 package com.adifaisalr.tmdbapplication.data.api
 
-import com.adifaisalr.tmdbapplication.domain.model.dataholder.DataHolder
-import com.adifaisalr.tmdbapplication.domain.model.dataholder.ErrorData
+import com.adifaisalr.tmdbapplication.libs.domain.model.dataholder.DataHolder
+import com.adifaisalr.tmdbapplication.libs.domain.model.dataholder.ErrorData
 import okhttp3.Request
 import okio.Timeout
 import retrofit2.Call

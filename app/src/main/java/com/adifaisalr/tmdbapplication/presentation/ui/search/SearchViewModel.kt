@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.adifaisalr.tmdbapplication.domain.model.SearchItem
-import com.adifaisalr.tmdbapplication.domain.model.SearchMedia
-import com.adifaisalr.tmdbapplication.domain.model.dataholder.DataHolder
-import com.adifaisalr.tmdbapplication.domain.usecase.SearchMediaUseCase
+import com.adifaisalr.tmdbapplication.libs.domain.model.SearchItem
+import com.adifaisalr.tmdbapplication.libs.domain.model.SearchMedia
+import com.adifaisalr.tmdbapplication.libs.domain.model.dataholder.DataHolder
+import com.adifaisalr.tmdbapplication.libs.domain.usecase.SearchMediaUseCase
 import com.adifaisalr.tmdbapplication.presentation.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

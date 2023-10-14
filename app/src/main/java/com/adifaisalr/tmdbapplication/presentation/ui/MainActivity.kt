@@ -7,10 +7,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.adifaisalr.tmdbapplication.libs.domain.model.getMediaType
 import com.adifaisalr.tmdbapplication.presentation.ui.detail.MediaDetailScreen
 import com.adifaisalr.tmdbapplication.presentation.ui.detail.MediaDetailViewModel
 import com.adifaisalr.tmdbapplication.presentation.ui.home.HomeScreen
-import com.adifaisalr.tmdbapplication.presentation.ui.media.MediaViewModel.Companion.getMediaType
 import com.adifaisalr.tmdbapplication.presentation.ui.search.SearchScreen
 import com.adifaisalr.tmdbapplication.presentation.ui.search.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint

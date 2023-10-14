@@ -1,8 +1,8 @@
 package com.adifaisalr.tmdbapplication.presentation.ui.search
 
-import com.adifaisalr.tmdbapplication.domain.model.SearchItem
+import com.adifaisalr.tmdbapplication.libs.domain.model.MediaType
+import com.adifaisalr.tmdbapplication.libs.domain.model.SearchItem
 import com.adifaisalr.tmdbapplication.presentation.ui.base.BaseViewModel
-import com.adifaisalr.tmdbapplication.presentation.ui.media.MediaViewModel
 
 sealed class SearchActionResult : BaseViewModel.ActionResult {
     data class SetShowLoading(val isShown: Boolean) : SearchActionResult()
@@ -13,7 +13,7 @@ sealed class SearchActionResult : BaseViewModel.ActionResult {
 
     data class GoToDetail(
         val id: Long,
-        val type: MediaViewModel.Companion.MediaType,
+        val type: MediaType,
     ) : SearchActionResult()
 
     data object DoNothing : SearchActionResult()

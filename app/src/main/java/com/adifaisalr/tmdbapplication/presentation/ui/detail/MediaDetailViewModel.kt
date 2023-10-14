@@ -1,16 +1,16 @@
 package com.adifaisalr.tmdbapplication.presentation.ui.detail
 
 import androidx.lifecycle.viewModelScope
-import com.adifaisalr.tmdbapplication.domain.model.Media
-import com.adifaisalr.tmdbapplication.domain.model.Review
-import com.adifaisalr.tmdbapplication.domain.model.dataholder.DataHolder
-import com.adifaisalr.tmdbapplication.domain.usecase.DeleteFavoriteMediaUseCase
-import com.adifaisalr.tmdbapplication.domain.usecase.GetMediaDetailUseCase
-import com.adifaisalr.tmdbapplication.domain.usecase.GetMediaReviewUseCase
-import com.adifaisalr.tmdbapplication.domain.usecase.LoadFavoriteMediaUseCase
-import com.adifaisalr.tmdbapplication.domain.usecase.SaveFavoriteMediaUseCase
+import com.adifaisalr.tmdbapplication.libs.domain.model.Media
+import com.adifaisalr.tmdbapplication.libs.domain.model.MediaType
+import com.adifaisalr.tmdbapplication.libs.domain.model.Review
+import com.adifaisalr.tmdbapplication.libs.domain.model.dataholder.DataHolder
+import com.adifaisalr.tmdbapplication.libs.domain.usecase.DeleteFavoriteMediaUseCase
+import com.adifaisalr.tmdbapplication.libs.domain.usecase.GetMediaDetailUseCase
+import com.adifaisalr.tmdbapplication.libs.domain.usecase.GetMediaReviewUseCase
+import com.adifaisalr.tmdbapplication.libs.domain.usecase.LoadFavoriteMediaUseCase
+import com.adifaisalr.tmdbapplication.libs.domain.usecase.SaveFavoriteMediaUseCase
 import com.adifaisalr.tmdbapplication.presentation.ui.base.BaseViewModel
-import com.adifaisalr.tmdbapplication.presentation.ui.media.MediaViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,7 +28,7 @@ class MediaDetailViewModel @Inject constructor(
 ) {
 
     var mediaId by Delegates.notNull<Int>()
-    lateinit var mediaType: MediaViewModel.Companion.MediaType
+    lateinit var mediaType: MediaType
 
     protected var media: Media? = null
     protected var reviewItemList: List<Review> = emptyList()

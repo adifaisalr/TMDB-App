@@ -1,7 +1,7 @@
 package com.adifaisalr.tmdbapplication.presentation.ui.detail
 
-import com.adifaisalr.tmdbapplication.domain.model.Media
-import com.adifaisalr.tmdbapplication.domain.model.Review
+import com.adifaisalr.tmdbapplication.libs.domain.model.Media
+import com.adifaisalr.tmdbapplication.libs.domain.model.Review
 import com.adifaisalr.tmdbapplication.presentation.ui.base.BaseViewModel
 
 data class MediaDetailViewState(

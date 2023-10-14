@@ -1,19 +1,12 @@
 package com.adifaisalr.tmdbapplication.presentation.ui.media
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.NewInstanceFactory.Companion.VIEW_MODEL_KEY
-import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.adifaisalr.tmdbapplication.R
-import com.adifaisalr.tmdbapplication.domain.model.HomeSectionMedia
-import com.adifaisalr.tmdbapplication.domain.model.dataholder.DataHolder
-import com.adifaisalr.tmdbapplication.domain.usecase.GetDiscoverMediaUseCase
-import com.adifaisalr.tmdbapplication.domain.usecase.GetPopularMediaUseCase
-import com.adifaisalr.tmdbapplication.domain.usecase.GetTrendingMediaUseCase
+import com.adifaisalr.tmdbapplication.libs.domain.model.HomeSectionMedia
+import com.adifaisalr.tmdbapplication.libs.domain.model.MediaType
+import com.adifaisalr.tmdbapplication.libs.domain.model.dataholder.DataHolder
+import com.adifaisalr.tmdbapplication.libs.domain.usecase.GetDiscoverMediaUseCase
+import com.adifaisalr.tmdbapplication.libs.domain.usecase.GetPopularMediaUseCase
+import com.adifaisalr.tmdbapplication.libs.domain.usecase.GetTrendingMediaUseCase
 import com.adifaisalr.tmdbapplication.presentation.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -115,13 +108,6 @@ class MediaViewModel @Inject constructor(
     }
 
     companion object {
-        enum class MediaType(val id: Int, val type: String, val titleStringId: Int) {
-            MOVIES(0, "movie", R.string.title_movies),
-            TV_SHOWS(1, "tv", R.string.title_tvs)
-        }
-
-        fun Int.getMediaType() = if (this == 0) MediaType.MOVIES else MediaType.TV_SHOWS
-
         const val TIME_WINDOW_DAY = "day"
     }
 }

@@ -1,10 +1,10 @@
 package com.adifaisalr.tmdbapplication.data.api
 
-import com.adifaisalr.tmdbapplication.domain.model.HomeSectionMedia
-import com.adifaisalr.tmdbapplication.domain.model.Media
-import com.adifaisalr.tmdbapplication.domain.model.MediaReview
-import com.adifaisalr.tmdbapplication.domain.model.SearchMedia
-import com.adifaisalr.tmdbapplication.domain.model.dataholder.DataHolder
+import com.adifaisalr.tmdbapplication.libs.domain.model.HomeSectionMedia
+import com.adifaisalr.tmdbapplication.libs.domain.model.Media
+import com.adifaisalr.tmdbapplication.libs.domain.model.MediaReview
+import com.adifaisalr.tmdbapplication.libs.domain.model.SearchMedia
+import com.adifaisalr.tmdbapplication.libs.domain.model.dataholder.DataHolder
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

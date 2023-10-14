@@ -1,8 +1,8 @@
 package com.adifaisalr.tmdbapplication.presentation.ui.favorite
 
 import androidx.lifecycle.viewModelScope
-import com.adifaisalr.tmdbapplication.domain.model.Media
-import com.adifaisalr.tmdbapplication.domain.usecase.LoadFavoriteMediaUseCase
+import com.adifaisalr.tmdbapplication.libs.domain.model.Media
+import com.adifaisalr.tmdbapplication.libs.domain.usecase.LoadFavoriteMediaUseCase
 import com.adifaisalr.tmdbapplication.presentation.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

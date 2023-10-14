@@ -15,8 +15,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.adifaisalr.tmdbapplication.R
-import com.adifaisalr.tmdbapplication.domain.model.SearchItem
-import com.adifaisalr.tmdbapplication.presentation.ui.media.MediaViewModel
+import com.adifaisalr.tmdbapplication.libs.domain.model.MediaType
+import com.adifaisalr.tmdbapplication.libs.domain.model.SearchItem
 import com.adifaisalr.tmdbapplication.presentation.ui.search.LoadingItemView
 import com.adifaisalr.tmdbapplication.presentation.ui.search.SearchItemView
 import com.adifaisalr.tmdbapplication.presentation.util.NavigationUtils.safeNavigate
@@ -31,7 +31,7 @@ fun FavoriteMediaScreen(
     val viewState by viewModel.stateFlow.collectAsStateWithLifecycle()
 
     val onItemClick: ((SearchItem) -> Unit) = { item ->
-        val mediaType = MediaViewModel.Companion.MediaType.values().find { it.type == item.mediaType }
+        val mediaType = MediaType.values().find { it.type == item.mediaType }
         mediaType?.let {
             navController.safeNavigate("mediadetail/${mediaType.id}/${item.id}")
         }

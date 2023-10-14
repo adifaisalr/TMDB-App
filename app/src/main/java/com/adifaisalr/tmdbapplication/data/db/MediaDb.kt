@@ -2,7 +2,7 @@ package com.adifaisalr.tmdbapplication.data.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.adifaisalr.tmdbapplication.domain.model.Media
+import com.adifaisalr.tmdbapplication.libs.domain.model.Media
 
 /**
  * Main database description.

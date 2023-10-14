@@ -1,6 +1,6 @@
 package com.adifaisalr.tmdbapplication.presentation.ui.search
 
-import com.adifaisalr.tmdbapplication.domain.model.SearchItem
+import com.adifaisalr.tmdbapplication.libs.domain.model.SearchItem
 import com.adifaisalr.tmdbapplication.presentation.ui.base.BaseViewModel
 
 data class SearchViewState(

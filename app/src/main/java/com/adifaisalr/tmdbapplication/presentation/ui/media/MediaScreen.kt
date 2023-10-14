@@ -41,7 +41,8 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.adifaisalr.tmdbapplication.R
 import com.adifaisalr.tmdbapplication.data.api.Api
-import com.adifaisalr.tmdbapplication.domain.model.Media
+import com.adifaisalr.tmdbapplication.libs.domain.model.Media
+import com.adifaisalr.tmdbapplication.libs.domain.model.MediaType
 import com.adifaisalr.tmdbapplication.presentation.ui.components.ShimmerBrush
 import com.adifaisalr.tmdbapplication.presentation.util.NavigationUtils.safeNavigate
 import kotlinx.coroutines.delay
@@ -50,7 +51,7 @@ import kotlinx.coroutines.yield
 @Composable
 fun MediaScreen(
     modifier: Modifier = Modifier,
-    mediaType: MediaViewModel.Companion.MediaType,
+    mediaType: MediaType,
     navController: NavController,
     viewModel: MediaViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {

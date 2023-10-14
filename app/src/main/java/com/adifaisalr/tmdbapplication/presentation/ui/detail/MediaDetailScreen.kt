@@ -48,13 +48,13 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.adifaisalr.tmdbapplication.R
 import com.adifaisalr.tmdbapplication.data.api.Api
-import com.adifaisalr.tmdbapplication.domain.model.Review
+import com.adifaisalr.tmdbapplication.libs.domain.model.MediaType
+import com.adifaisalr.tmdbapplication.libs.domain.model.Review
 import com.adifaisalr.tmdbapplication.presentation.ui.components.ShimmerBrush
-import com.adifaisalr.tmdbapplication.presentation.ui.media.MediaViewModel
 
 @Composable
 fun MediaDetailScreen(
-    mediaType: MediaViewModel.Companion.MediaType,
+    mediaType: MediaType,
     mediaId: Int,
     navController: NavController,
     viewModel: MediaDetailViewModel = androidx.lifecycle.viewmodel.compose.viewModel()

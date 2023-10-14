@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.adifaisalr.tmdbapplication.domain.model.Media
+import com.adifaisalr.tmdbapplication.libs.domain.model.Media
 
 /**
  * Interface for database access.
