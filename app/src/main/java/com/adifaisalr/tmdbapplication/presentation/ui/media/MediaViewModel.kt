@@ -1,6 +1,13 @@
 package com.adifaisalr.tmdbapplication.presentation.ui.media
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.NewInstanceFactory.Companion.VIEW_MODEL_KEY
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.adifaisalr.tmdbapplication.R
 import com.adifaisalr.tmdbapplication.domain.model.HomeSectionMedia
 import com.adifaisalr.tmdbapplication.domain.model.dataholder.DataHolder
@@ -16,9 +23,9 @@ import javax.inject.Inject
 class MediaViewModel @Inject constructor(
     private val getPopularMediaUseCase: GetPopularMediaUseCase,
     private val getTrendingMediaUseCase: GetTrendingMediaUseCase,
-    private val getDiscoverMediaUseCase: GetDiscoverMediaUseCase
-) : BaseViewModel<MediaHomeViewState, MediaHomeActionResult>(
-    initialState = MediaHomeViewState()
+    private val getDiscoverMediaUseCase: GetDiscoverMediaUseCase,
+) : BaseViewModel<MediaViewState, MediaActionResult>(
+    initialState = MediaViewState()
 ) {
 
     var mediaType: MediaType = MediaType.MOVIES
@@ -33,76 +40,76 @@ class MediaViewModel @Inject constructor(
         getDiscoverMovies()
     }
 
-    override fun reducer(oldState: MediaHomeViewState, actionResult: MediaHomeActionResult): MediaHomeViewState {
-        return MediaHomeViewState(
+    override fun reducer(oldState: MediaViewState, actionResult: MediaActionResult): MediaViewState {
+        return MediaViewState(
             popularMediaViewState = oldState.popularMediaReducer(actionResult),
             trendingMediaViewState = oldState.trendingMediaReducer(actionResult),
             discoverMediaViewState = oldState.discoverMediaReducer(actionResult),
         )
     }
 
-    private fun MediaHomeViewState.popularMediaReducer(actionResult: MediaHomeActionResult): MediaViewState =
+    private fun MediaViewState.popularMediaReducer(actionResult: MediaActionResult): MediaSectionViewState =
         when (actionResult) {
-            is MediaHomeActionResult.SetPopularLoading -> MediaViewState(isLoading = true)
-            is MediaHomeActionResult.SetPopularMediaHome -> MediaViewState(media = actionResult.popularMedia)
-            is MediaHomeActionResult.SetPopularError -> MediaViewState(errorMessage = actionResult.errorMsg)
+            is MediaActionResult.SetPopularLoading -> MediaSectionViewState(isLoading = true)
+            is MediaActionResult.SetPopularMediaHome -> MediaSectionViewState(media = actionResult.popularMedia)
+            is MediaActionResult.SetPopularError -> MediaSectionViewState(errorMessage = actionResult.errorMsg)
             else -> popularMediaViewState
         }
 
-    private fun MediaHomeViewState.trendingMediaReducer(actionResult: MediaHomeActionResult): MediaViewState =
+    private fun MediaViewState.trendingMediaReducer(actionResult: MediaActionResult): MediaSectionViewState =
         when (actionResult) {
-            is MediaHomeActionResult.SetTrendingLoading -> MediaViewState(isLoading = true)
-            is MediaHomeActionResult.SetTrendingMediaHome -> MediaViewState(media = actionResult.trendingMedia)
-            is MediaHomeActionResult.SetTrendingError -> MediaViewState(errorMessage = actionResult.errorMsg)
+            is MediaActionResult.SetTrendingLoading -> MediaSectionViewState(isLoading = true)
+            is MediaActionResult.SetTrendingMediaHome -> MediaSectionViewState(media = actionResult.trendingMedia)
+            is MediaActionResult.SetTrendingError -> MediaSectionViewState(errorMessage = actionResult.errorMsg)
             else -> trendingMediaViewState
         }
 
-    private fun MediaHomeViewState.discoverMediaReducer(actionResult: MediaHomeActionResult): MediaViewState =
+    private fun MediaViewState.discoverMediaReducer(actionResult: MediaActionResult): MediaSectionViewState =
         when (actionResult) {
-            is MediaHomeActionResult.SetDiscoverLoading -> MediaViewState(isLoading = true)
-            is MediaHomeActionResult.SetDiscoverMediaHome -> MediaViewState(media = actionResult.discoverMedia)
-            is MediaHomeActionResult.SetDiscoverError -> MediaViewState(errorMessage = actionResult.errorMsg)
+            is MediaActionResult.SetDiscoverLoading -> MediaSectionViewState(isLoading = true)
+            is MediaActionResult.SetDiscoverMediaHome -> MediaSectionViewState(media = actionResult.discoverMedia)
+            is MediaActionResult.SetDiscoverError -> MediaSectionViewState(errorMessage = actionResult.errorMsg)
             else -> discoverMediaViewState
         }
 
     private fun getPopularMovies() = viewModelScope.launch {
-        handleActionResult(MediaHomeActionResult.SetPopularLoading(true))
+        handleActionResult(MediaActionResult.SetPopularLoading(true))
         when (val response = getPopularMediaUseCase(mediaType)) {
             is DataHolder.Success -> {
                 popularMedia = response.data
-                handleActionResult(MediaHomeActionResult.SetPopularMediaHome(popularMedia))
+                handleActionResult(MediaActionResult.SetPopularMediaHome(popularMedia))
             }
 
             else -> {
-                handleActionResult(MediaHomeActionResult.SetPopularError("Error loading data"))
+                handleActionResult(MediaActionResult.SetPopularError("Error loading data"))
             }
         }
     }
 
     private fun getTrendingMovies() = viewModelScope.launch {
-        handleActionResult(MediaHomeActionResult.SetTrendingLoading(true))
+        handleActionResult(MediaActionResult.SetTrendingLoading(true))
         when (val response = getTrendingMediaUseCase(mediaType.type, TIME_WINDOW_DAY)) {
             is DataHolder.Success -> {
                 trendingMedia = response.data
-                handleActionResult(MediaHomeActionResult.SetTrendingMediaHome(trendingMedia))
+                handleActionResult(MediaActionResult.SetTrendingMediaHome(trendingMedia))
             }
 
             else -> {
-                handleActionResult(MediaHomeActionResult.SetTrendingError("Error loading data"))
+                handleActionResult(MediaActionResult.SetTrendingError("Error loading data"))
             }
         }
     }
 
     private fun getDiscoverMovies() = viewModelScope.launch {
-        handleActionResult(MediaHomeActionResult.SetDiscoverLoading(true))
+        handleActionResult(MediaActionResult.SetDiscoverLoading(true))
         when (val response = getDiscoverMediaUseCase(mediaType)) {
             is DataHolder.Success -> {
                 discoverMedia = response.data
-                handleActionResult(MediaHomeActionResult.SetDiscoverMediaHome(discoverMedia))
+                handleActionResult(MediaActionResult.SetDiscoverMediaHome(discoverMedia))
             }
 
             else -> {
-                handleActionResult(MediaHomeActionResult.SetDiscoverError("Error loading data"))
+                handleActionResult(MediaActionResult.SetDiscoverError("Error loading data"))
             }
         }
     }
@@ -114,5 +121,7 @@ class MediaViewModel @Inject constructor(
         }
 
         const val TIME_WINDOW_DAY = "day"
+
     }
 }
+

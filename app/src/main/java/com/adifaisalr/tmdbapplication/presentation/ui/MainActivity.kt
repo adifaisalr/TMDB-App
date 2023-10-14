@@ -59,15 +59,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun BracketMatcher(str: String): String {
-        val openBracketCount = str.count { it == '(' }
-        val closeBracketCount = str.count { it == ')' }
-
-        return if(openBracketCount == closeBracketCount) "1"
-        else "0"
-
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_search, menu)
         return super.onCreateOptionsMenu(menu)
