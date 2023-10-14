@@ -25,6 +25,10 @@ In progress to migrate to use :
 - Jetpack Compose
 - Navigation Component for Compose
 
+TODO :
+- modularization
+- unit test (broken due to compose migration)
+
 ## Architecture
 Clean Architecture with layers :
 - Domain : Use Case, Repository Interface, Model
